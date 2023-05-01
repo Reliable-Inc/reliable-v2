@@ -1,3 +1,5 @@
+"use strict";
+
 const dotenv = require("dotenv");
 const chalk = require("chalk");
 const { Configuration } = require("./config");
