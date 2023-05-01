@@ -1,5 +1,6 @@
 const dotenv = require("dotenv");
 const chalk = require("chalk");
+const { Configuration } = require("./config");
 dotenv.config();
 
 class ConfigurationError extends Error {
@@ -16,12 +17,12 @@ class ConfigurationTypeError extends TypeError {
   }
 }
 
-const Token = process.env["Token"]?.toString();
+const Token = process.env["Token"];
 
 // ConfiguratonError
 if (!Token) {
   const errorMessage =
-    chalk.cyan("[ ANTICRASH ]") +
+    chalk.cyan("[ BUG Checker ]") +
     chalk.white.bold(" | ") +
     chalk.blue(`${new Date().toLocaleDateString()}`) +
     chalk.white.bold(" | ") +
@@ -36,7 +37,7 @@ if (!Token) {
 }
 if (!process.env["MongoDB"]) {
   const errorMessage =
-    chalk.cyan("[ ANTICRASH ]") +
+    chalk.cyan("[ BUG Checker ]") +
     chalk.white.bold(" | ") +
     chalk.blue(`${new Date().toLocaleDateString()}`) +
     chalk.white.bold(" | ") +
@@ -51,7 +52,7 @@ if (!process.env["MongoDB"]) {
 }
 if (!process.env["MongoDB"].includes("mongodb+srv://")) {
   const errorMessage =
-    chalk.cyan("[ ANTICRASH ]") +
+    chalk.cyan("[ BUG Checker ]") +
     chalk.white.bold(" | ") +
     chalk.blue(`${new Date().toLocaleDateString()}`) +
     chalk.white.bold(" | ") +
@@ -67,7 +68,7 @@ if (!process.env["MongoDB"].includes("mongodb+srv://")) {
 
 if (!process.env["ClientId"]) {
   const errorMessage =
-    chalk.greenBright("[ ANTICRASH ]") +
+    chalk.greenBright("[ BUG Checker ]") +
     chalk.white.bold(" | ") +
     chalk.blue(`${new Date().toLocaleDateString()}`) +
     chalk.white.bold(" | ") +
@@ -80,12 +81,39 @@ if (!process.env["ClientId"]) {
     );
   throw new ConfigurationError(`${errorMessage}`);
 }
+
+if (!Configuration.developerIds) {
+  throw new ConfigurationError(
+    `Developer IDs are not provided in the config.js file`
+  );
+}
+
 // ConfigurationTypeError
 if (typeof Token !== "string") {
   throw new ConfigurationTypeError(
     "Invalid Token",
     "was provided.",
     `\nExpected type of Token to be a valid "string" but got ${typeof Token} instead.`
+  );
+}
+
+if (typeof process.env["MongoDB"] !== "string") {
+  throw new ConfigurationTypeError(
+    "Invalid MongoDB",
+    "was provided",
+    `\nExpected type of MongoDB to be a valid "string" but got ${typeof process
+      .env["MongoDB"]} instead.`
+  );
+}
+
+if (
+  Array.isArray(Configuration.developerIds) &&
+  Configuration.developerIds.every((id) => typeof id === "string")
+) {
+  return;
+} else {
+  throw new ConfigurationTypeError(
+    `Expected type of developerIds in config.js to be a string array but got ${typeof Configuration.developerIds} instead.`
   );
 }
 
