@@ -1,4 +1,4 @@
-const { Client, Events } = require("discord.js");
+const { Client, Events, ActivityType } = require("discord.js");
 const { Configuration } = require("../../config");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
@@ -43,5 +43,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
     }
+
+    client.user.setActivity("Reliable | /help", {
+      type: ActivityType.Playing,
+    });
+    client.user.setStatus("dnd");
   },
 };
