@@ -1,4 +1,5 @@
 const { Events, CommandInteraction, Client } = require("discord.js");
+const { Configuration } = require("../../config");
 
 module.exports = {
   name: Events.InteractionCreate,
@@ -21,7 +22,24 @@ module.exports = {
         });
       }
 
-      command.execute(interaction, client);
+      if (command.developer) {
+        const developerIds = Configuration.developerIds;
+        if (!developerIds.includes(interaction.user.id)) {
+          return interaction.reply({
+            content: `This command is developer only.`,
+            ephemeral: true,
+          });
+        }
+      }
+
+      try {
+        command.execute(interaction, client);
+      } catch (e) {
+        return interaction.reply({
+          content: "There was an error while executing the command",
+          ephemeral: true,
+        });
+      }
     } catch (e) {
       console.error(e);
     }
