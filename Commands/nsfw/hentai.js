@@ -13,7 +13,7 @@ module.exports = {
   developer: true,
   data: new SlashCommandBuilder()
     .setName("hentai")
-    .setDescription("Hentai command only for developers :>")
+    .setDescription("Some thing.. That.. Extremely Sus.")
     .setNSFW(true)
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
@@ -24,12 +24,13 @@ module.exports = {
    */
   async execute(interaction, client) {
     const image = await nsfw.hentai();
+    const hentaiimg = new EmbedBuilder()
+    .setColor("#2F3136")
+    .setFooter({ text: "©2022 - 2023 | Reliable" })
+    .setTimestamp()
+    .setTitle("`👀` | Sir.. Sir..!, SIR!")
+    .setImage(image);
 
-    const HentaiImg = new EmbedBuilder()
-      .setColor(colors.MikadoYellow)
-      .setTitle("👀")
-      .setImage(image);
-
-    await interaction.reply({ embeds: [HentaiImg] });
+    await interaction.reply({ embeds: [hentaiimg] });
   },
 };
