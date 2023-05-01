@@ -13,7 +13,7 @@ module.exports = {
   developer: true,
   data: new SlashCommandBuilder()
     .setName("anal")
-    .setDescription("Anal command only for developers :>")
+    .setDescription("Some thing.. That.. Extremely Sus.")
     .setNSFW(true)
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
@@ -24,11 +24,12 @@ module.exports = {
    */
   async execute(interaction, client) {
     const image = await nsfw.anal();
-
     const AnalImg = new EmbedBuilder()
-      .setColor(colors.MikadoYellow)
-      .setTitle("👀")
-      .setImage(image);
+    .setColor("#2F3136")
+    .setFooter({ text: "©2022 - 2023 | Reliable" })
+    .setTimestamp()
+    .setTitle("`👀` | Sir.. Sir..!, SIR!")
+    .setImage(image);
 
     await interaction.reply({ embeds: [AnalImg] });
   },
