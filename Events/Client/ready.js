@@ -1,5 +1,5 @@
 const { Client, Events } = require("discord.js");
-const { colors } = require("discordjs-colors-bundle");
+const { Configuration } = require("../../config");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
 const mongoose = require("mongoose");
@@ -8,7 +8,7 @@ dotenv.config();
 const MongoURL = process.env["MongoDB"];
 
 const clientId = process.env["ClientId"];
-const guildId = "1029777893112418314";
+const guildId = Configuration.guildId;
 module.exports = {
   name: Events.ClientReady,
   once: true,
