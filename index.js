@@ -30,13 +30,13 @@ app.get("/", (req, res) => {
 const port = 3000;
 app.listen(port, () => {
   console.log(
-    chalk.blueBright("[ SERVER ]") +
+  chalk.cyan("[ INFORMATION ]") +
       chalk.white.bold(" | ") +
-      chalk.red.bold(`${new Date().toLocaleDateString()}`) +
+      chalk.blue(`${new Date().toLocaleDateString()}`) +
       chalk.white.bold(" | ") +
-      chalk.cyan("Server started on port ") +
+      chalk.cyan("Server started on port") +
       chalk.white(": ") +
-      chalk.red(`${port}`)
+      chalk.greenBright(`${port}`)
   );
 });
 dotenv.config();
