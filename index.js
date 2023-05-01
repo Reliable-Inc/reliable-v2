@@ -1,3 +1,8 @@
+"use strict";
+
+// Run checker.
+require("./checker.js");
+
 // All Modules/File Loading
 
 const {
@@ -11,9 +16,8 @@ const chalk = require("chalk");
 const express = require("express");
 const fs = require("fs");
 const app = express();
-require("./checker.js");
 
-//Executing
+// Express Server
 app.get("/", (req, res) => {
   const currentDate = new Date().toLocaleString();
   const clientIP = req.ip;
@@ -30,7 +34,7 @@ app.get("/", (req, res) => {
 const port = 3000;
 app.listen(port, () => {
   console.log(
-  chalk.cyan("[ INFORMATION ]") +
+    chalk.cyan("[ INFORMATION ]") +
       chalk.white.bold(" | ") +
       chalk.blue(`${new Date().toLocaleDateString()}`) +
       chalk.white.bold(" | ") +
