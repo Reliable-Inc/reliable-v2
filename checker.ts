@@ -6,8 +6,12 @@ import * as fs from "fs";
 import { Configuration } from "./config";
 dotenv.config();
 
-// Types
-type ModuleName = "./index.js" | "./config.js";
+enum StrictErrorExpectedValues {
+  strict = "strict",
+  string = "string",
+  number = "number",
+  boolean = "boolean",
+}
 
 class ConfigurationError extends Error {
   constructor(...message) {
@@ -24,12 +28,27 @@ class ConfigurationTypeError extends TypeError {
 }
 
 class StrictError extends Error {
-  required;
-  constructor(...message) {
-    super(message.join(" "));
+  private expected: string;
+  private received: string;
+
+  constructor(message: string, expected: "strict", received?: "none") {
+    super(message);
     this.name = "StrictError";
-    this.required = "strict";
-    this.message = `${this.message}\n${this.required}`;
+    this.expected = expected ?? "";
+    this.received = received ?? "";
+  }
+
+  public toString() {
+    const stack = this.stack?.split("\n").slice(2).join("\n");
+    const received = this.received
+      ? `${chalk.gray("|")} ${chalk.gray(this.received)}`
+      : "";
+
+    return `${chalk.red(this.name)} > ${chalk.yellow(
+      this.message
+    )}\n${chalk.red("Expected:")} ${this.expected}\n${chalk.red("Received:")} ${
+      this.received
+    }\n\n${received}\n\n${chalk.gray(stack)}`;
   }
 }
 
@@ -139,8 +158,15 @@ loadModule("./index.js");
 async function loadModule(path: string) {
   const resolvedPath = require.resolve(path);
   const code = fs.readFileSync(resolvedPath, "utf8");
-  if (!code.includes(`"use strict";`)) {
-    throw new StrictError("Strict is not enabled in", resolvedPath);
+  const lines = code.split("\n");
+  const isStrictEnabled = lines.some((line) => line.includes("strict"));
+
+  if (!isStrictEnabled) {
+    throw new StrictError(
+      `Strict is not enabled in ${resolvedPath}`,
+      "strict",
+      "none"
+    );
   }
 }
 

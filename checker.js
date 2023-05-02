@@ -82,6 +82,13 @@ var dotenv = __importStar(require("dotenv"));
 var fs = __importStar(require("fs"));
 var config_1 = require("./config");
 dotenv.config();
+var StrictErrorExpectedValues;
+(function (StrictErrorExpectedValues) {
+    StrictErrorExpectedValues["strict"] = "strict";
+    StrictErrorExpectedValues["string"] = "string";
+    StrictErrorExpectedValues["number"] = "number";
+    StrictErrorExpectedValues["boolean"] = "boolean";
+})(StrictErrorExpectedValues || (StrictErrorExpectedValues = {}));
 var ConfigurationError = /** @class */ (function (_super) {
     __extends(ConfigurationError, _super);
     function ConfigurationError() {
@@ -110,17 +117,21 @@ var ConfigurationTypeError = /** @class */ (function (_super) {
 }(TypeError));
 var StrictError = /** @class */ (function (_super) {
     __extends(StrictError, _super);
-    function StrictError() {
-        var message = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            message[_i] = arguments[_i];
-        }
-        var _this = _super.call(this, message.join(" ")) || this;
+    function StrictError(message, expected, received) {
+        var _this = _super.call(this, message) || this;
         _this.name = "StrictError";
-        _this.required = "strict";
-        _this.message = "".concat(_this.message, "\n").concat(_this.required);
+        _this.expected = expected !== null && expected !== void 0 ? expected : "";
+        _this.received = received !== null && received !== void 0 ? received : "";
         return _this;
     }
+    StrictError.prototype.toString = function () {
+        var _a;
+        var stack = (_a = this.stack) === null || _a === void 0 ? void 0 : _a.split("\n").slice(2).join("\n");
+        var received = this.received
+            ? "".concat(chalk_1["default"].gray("|"), " ").concat(chalk_1["default"].gray(this.received))
+            : "";
+        return "".concat(chalk_1["default"].red(this.name), " > ").concat(chalk_1["default"].yellow(this.message), "\n").concat(chalk_1["default"].red("Expected:"), " ").concat(this.expected, "\n").concat(chalk_1["default"].red("Received:"), " ").concat(this.received, "\n\n").concat(received, "\n\n").concat(chalk_1["default"].gray(stack));
+    };
     return StrictError;
 }(Error));
 var Token = process.env["Token"];
@@ -195,12 +206,14 @@ else {
 loadModule("./index.js");
 function loadModule(path) {
     return __awaiter(this, void 0, void 0, function () {
-        var resolvedPath, code;
+        var resolvedPath, code, lines, isStrictEnabled;
         return __generator(this, function (_a) {
             resolvedPath = require.resolve(path);
             code = fs.readFileSync(resolvedPath, "utf8");
-            if (!code.includes("\"use strict\";")) {
-                throw new StrictError("Strict is not enabled in", resolvedPath);
+            lines = code.split("\n");
+            isStrictEnabled = lines.some(function (line) { return line.includes("strict"); });
+            if (!isStrictEnabled) {
+                throw new StrictError("Strict is not enabled in ".concat(resolvedPath), "strict", "none");
             }
             return [2 /*return*/];
         });
