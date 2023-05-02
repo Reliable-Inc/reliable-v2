@@ -163,6 +163,19 @@ module.exports = {
         } catch (e) {
           console.error(e);
         }
+      } else if (interaction.isContextMenuCommand()) {
+        const { commands } = client;
+        const { commandName } = interaction;
+
+        const contextCommand = commands.get(commandName);
+
+        if (!contextCommand) return;
+
+        try {
+          contextCommand.execute(interaction, client);
+        } catch (e) {
+          console.error(e);
+        }
       }
     } catch (e) {
       console.error(e);
