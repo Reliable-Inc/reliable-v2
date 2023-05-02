@@ -6,6 +6,7 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  InteractionType,
 } = require("discord.js");
 const { Configuration } = require("../../config");
 const chalk = require("chalk");
@@ -147,7 +148,20 @@ module.exports = {
         try {
           await menu.execute(interaction, client);
         } catch (e) {
-          console.log(e);
+          console.error(e);
+        }
+      } else if (interaction.type == InteractionType.ModalSubmit) {
+        const { modals } = client;
+        const { customId } = interaction;
+
+        const modal = modals.get(customId);
+
+        if (!modal) return new Error("There is no code for the modal.");
+
+        try {
+          await modal.execute(interaction, client);
+        } catch (e) {
+          console.error(e);
         }
       }
     } catch (e) {
