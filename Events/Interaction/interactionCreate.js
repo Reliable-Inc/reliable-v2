@@ -10,6 +10,7 @@ const {
 } = require("discord.js");
 const { Configuration } = require("../../config");
 const chalk = require("chalk");
+const { CustomHex } = require("discordjs-colors-bundle");
 
 module.exports = {
   name: Events.InteractionCreate,
@@ -52,7 +53,7 @@ module.exports = {
               .setDescription(
                 "> **Sorry, you do not have permission to use this command. This command is intended only for developers and requires special access. If you believe you should have access to this command, please contact the bot owner for further assistance. Thank you for your understanding.**"
               )
-              .setColor("#2F3136")
+              .setColor(CustomHex("#2F3136"))
               .setFooter({ text: "©2022 - 2023 | Reliable" });
 
             const topgg = new ActionRowBuilder().addComponents(
@@ -96,7 +97,7 @@ module.exports = {
           
   __If you continue to experience issues, please reach out to the bot's developers for assistance. Thank you!__`
             )
-            .setColor("#2F3136")
+            .setColor(CustomHex("#2F3136"))
             .setFooter({ text: "©2022 - 2023 | Reliable" });
 
           const topgg = new ActionRowBuilder().addComponents(
