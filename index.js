@@ -84,6 +84,8 @@ const client = new Client({
 // Collections Manager
 client.commands = new Collection();
 client.buttons = new Collection();
+client.selectMenus = new Collection();
+
 // Commands
 const commandFolder = fs.readdirSync("./Commands");
 for (const folder of commandFolder) {
@@ -116,7 +118,7 @@ for (const folder of eventFolder) {
   }
 }
 
-// Button Manager
+// Components Manager
 
 const componentsFolder = fs.readdirSync("./Components");
 
@@ -130,12 +132,18 @@ for (const folder of componentsFolder) {
       {
         for (const file of componentsFile) {
           const button = require(`./Components/${folder}/${file}`);
-          4;
           client.buttons.set(button.data.name, button);
         }
       }
       break;
-
+    case "selectMenus":
+      {
+        for (const file of componentsFile) {
+          const menu = require(`./Components/${folder}/${file}`);
+          client.selectMenus.set(menu.data.name, menu);
+        }
+      }
+      break;
     default:
       break;
   }
