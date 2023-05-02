@@ -85,6 +85,7 @@ const client = new Client({
 client.commands = new Collection();
 client.buttons = new Collection();
 client.selectMenus = new Collection();
+client.modals = new Collection();
 
 // Commands
 const commandFolder = fs.readdirSync("./Commands");
@@ -144,6 +145,12 @@ for (const folder of componentsFolder) {
         }
       }
       break;
+    case "modals": {
+      for (const file of componentsFile) {
+        const modal = require(`./Components/${folder}/${file}`);
+        client.modals.set(modal.data.name, modal);
+      }
+    }
     default:
       break;
   }
