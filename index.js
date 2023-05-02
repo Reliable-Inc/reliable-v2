@@ -1,5 +1,4 @@
 "use strict";
-/// <reference path="./intelligence.d.ts" />
 
 // Run checker.
 require("./checker.js");
