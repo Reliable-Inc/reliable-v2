@@ -115,11 +115,13 @@ module.exports = {
               .setStyle("Link")
               .setURL("https://dsc.gg/reliable-bot")
           );
-          return interaction.reply({
-            embeds: [embed],
-            components: [topgg],
-            ephemeral: true,
-          });
+          return (
+            interaction.reply({
+              embeds: [embed],
+              components: [topgg],
+              ephemeral: true,
+            }) && console.error(e)
+          );
         }
       } else if (interaction.isButton()) {
         const { buttons } = client;
@@ -132,7 +134,20 @@ module.exports = {
         try {
           await button.execute(interaction, client);
         } catch (e) {
-          console.error(e.message);
+          console.error(e);
+        }
+      } else if (interaction.isAnySelectMenu()) {
+        const { selectMenus } = client;
+        const { customId } = interaction;
+
+        const menu = selectMenus.get(customId);
+
+        if (!menu) return new Error("There is no code for the menu.");
+
+        try {
+          await menu.execute(interaction, client);
+        } catch (e) {
+          console.log(e);
         }
       }
     } catch (e) {
