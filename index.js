@@ -81,9 +81,10 @@ const client = new Client({
   ],
 });
 
-// Commands Manager
+// Collections Manager
 client.commands = new Collection();
-
+client.buttons = new Collection();
+// Commands
 const commandFolder = fs.readdirSync("./Commands");
 for (const folder of commandFolder) {
   const commandFiles = fs
@@ -112,6 +113,31 @@ for (const folder of eventFolder) {
     } else {
       client.on(event.name, (...args) => event.execute(...args, client));
     }
+  }
+}
+
+// Button Manager
+
+const componentsFolder = fs.readdirSync("./Components");
+
+for (const folder of componentsFolder) {
+  const componentsFile = fs
+    .readdirSync(`./Components/${folder}`)
+    .filter((file) => file.endsWith(".js"));
+
+  switch (folder) {
+    case "buttons":
+      {
+        for (const file of componentsFile) {
+          const button = require(`./Components/${folder}/${file}`);
+          4;
+          client.buttons.set(button.data.name, button);
+        }
+      }
+      break;
+
+    default:
+      break;
   }
 }
 
