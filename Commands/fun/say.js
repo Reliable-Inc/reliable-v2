@@ -100,10 +100,11 @@ module.exports = {
           value: `**\`Successfully sent.\`**`,
         });
 
-      return (
-        interaction.reply({ embeds: [embed], ephemeral: true }) &&
-        (await cooldown.addUser(interaction.user.id))
-      );
+      await 
+        interaction.reply({ embeds: [embed], ephemeral: true }).then(async () => {
+                 await cooldown.addUser(interaction.user.id)
+ 
+        })
     }
   },
 };
