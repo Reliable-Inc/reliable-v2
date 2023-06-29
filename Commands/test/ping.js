@@ -14,7 +14,7 @@ const { CustomHex } = require("discordjs-colors-bundle");
 module.exports = {
   developer: true,
   data: new SlashCommandBuilder()
-    .setName("test")
+    .setName("botping")
     .setDescription("Returns bot ping")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
@@ -55,7 +55,7 @@ __If you continue to experience issues, please reach out to the bot's developers
         .setStyle("Link")
         .setURL("https://dsc.gg/reliable-bot")
     );
-    return interaction.reply({
+    await interaction.reply({
       embeds: [embed],
       components: [topgg],
       ephemeral: true,
