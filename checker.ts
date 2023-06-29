@@ -1,6 +1,6 @@
 'use strict';
 
-import * as chalk from 'chalk';
+import chalk from 'chalk'
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import { Configuration } from './config';
@@ -122,7 +122,7 @@ if (!Token) {
     chalk.yellow.bold('Solution') +
     chalk.white(': ') +
     chalk.bold.greenBright(
-      `Please provide the MongoDB URL in your environment variables.`
+      `Please provide the Token in your environment variables.`
     );
   throwError('Custom', 'ConfigurationError', `${errorMessage}`);
 }
