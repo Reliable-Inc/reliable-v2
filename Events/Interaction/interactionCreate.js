@@ -7,10 +7,11 @@ const {
   ButtonBuilder,
   ButtonStyle,
   InteractionType,
-} = require("discord.js");
-const { Configuration } = require("../../config");
-const chalk = require("chalk");
-const { CustomHex } = require("discordjs-colors-bundle");
+} = require('discord.js');
+const { Configuration } = require('../../config');
+const chalk = require('chalk');
+const { CustomHex, CustomRGB } = require('discordjs-colors-bundle');
+import BetaTestUsers from "../../Schemas/BetaTest";
 
 module.exports = {
   name: Events.InteractionCreate,
@@ -28,7 +29,7 @@ module.exports = {
 
         if (!command) {
           interaction.reply({
-            content: "Invalid Command",
+            content: 'Invalid Command',
             ephemeral: true,
           });
         }
@@ -37,43 +38,43 @@ module.exports = {
           const developerIds = Configuration.developerIds;
           if (!developerIds.includes(interaction.user.id)) {
             console.log(
-              chalk.cyan("[ INFORMATION ]") +
-                chalk.white.bold(" | ") +
+              chalk.cyan('[ INFORMATION ]') +
+                chalk.white.bold(' | ') +
                 chalk.blue(`${new Date().toLocaleDateString()}`) +
-                chalk.white.bold(" | ") +
-                chalk.cyan("Someone tried to use developer command") +
-                chalk.white(": ") +
+                chalk.white.bold(' | ') +
+                chalk.cyan('Someone tried to use developer command') +
+                chalk.white(': ') +
                 chalk.greenBright(
-                  `${interaction.user.tag} | ${interaction.user.id}`
-                )
+                  `${interaction.user.tag} | ${interaction.user.id}`,
+                ),
             );
 
             const embed = new EmbedBuilder()
-              .setTitle("Commands - Developer")
+              .setTitle('Commands - Developer')
               .setDescription(
-                "> **Sorry, you do not have permission to use this command. This command is intended only for developers and requires special access. If you believe you should have access to this command, please contact the bot owner for further assistance. Thank you for your understanding.**"
+                '> **Sorry, you do not have permission to use this command. This command is intended only for developers and requires special access. If you believe you should have access to this command, please contact the bot owner for further assistance. Thank you for your understanding.**',
               )
-              .setColor(CustomHex("#2F3136"))
-              .setFooter({ text: "©2022 - 2023 | Reliable" });
+              .setColor(CustomHex('#2F3136'))
+              .setFooter({ text: '©2022 - 2023 | Reliable' });
 
             const topgg = new ActionRowBuilder().addComponents(
               new ButtonBuilder()
-                .setLabel("Vote Reliable")
-                .setEmoji("<:reliable_topgg:1034324522305855561>")
-                .setStyle("Link")
+                .setLabel('Vote Reliable')
+                .setEmoji('<:reliable_topgg:1034324522305855561>')
+                .setStyle('Link')
                 .setURL(
-                  "https://top.gg/bot/1030870443005071512?s=05fa7c98112c0"
+                  'https://top.gg/bot/1030870443005071512?s=05fa7c98112c0',
                 ),
               new ButtonBuilder()
-                .setLabel("Support Server")
-                .setEmoji("<:reliable_support:1031443305399074836>")
+                .setLabel('Support Server')
+                .setEmoji('<:reliable_support:1031443305399074836>')
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://dsc.gg/reliable-support"),
+                .setURL('https://dsc.gg/reliable-support'),
               new ButtonBuilder()
-                .setLabel("Invite Reliable")
-                .setEmoji("<:reliable_invite:1031443216664371231>")
-                .setStyle("Link")
-                .setURL("https://dsc.gg/reliable-bot")
+                .setLabel('Invite Reliable')
+                .setEmoji('<:reliable_invite:1031443216664371231>')
+                .setStyle('Link')
+                .setURL('https://dsc.gg/reliable-bot'),
             );
             return interaction.reply({
               embeds: [embed],
@@ -81,13 +82,28 @@ module.exports = {
               ephemeral: true,
             });
           }
+        } else if (command.beta) {
+          const userID = interaction.user.id;
+
+          const existingUser = await BetaTestUsers.findOne({ userID });
+
+          if (!existingUser) {
+            const applyEmbed = new EmbedBuilder()
+              .setTitle('Beta Test Program')
+              .setDescription(
+                'Please first apply for the beta program by using the `/apply-beta` command.',
+              )
+              .setColor(CustomRGB(173, 255, 47));
+
+            return interaction.reply({ embeds: [applyEmbed], ephemeral: true });
+          }
         }
 
         try {
           await command.execute(interaction, client);
         } catch (e) {
           const embed = new EmbedBuilder()
-            .setTitle("Commands - Developer")
+            .setTitle('Commands - Developer')
             .setDescription(
               `> Oops, it looks like there was an error while executing that command. Here are some possible reasons why this happened:
   
@@ -95,27 +111,27 @@ module.exports = {
   **\`•\`** The command was used incorrectly or with invalid input.
   **\`•\`** The bot does not have the necessary permissions to perform that action.
           
-  __If you continue to experience issues, please reach out to the bot's developers for assistance. Thank you!__`
+  __If you continue to experience issues, please reach out to the bot's developers for assistance. Thank you!__`,
             )
-            .setColor(CustomHex("#2F3136"))
-            .setFooter({ text: "©2022 - 2023 | Reliable" });
+            .setColor(CustomHex('#2F3136'))
+            .setFooter({ text: '©2022 - 2023 | Reliable' });
 
           const topgg = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-              .setLabel("Vote Reliable")
-              .setEmoji("<:reliable_topgg:1034324522305855561>")
-              .setStyle("Link")
-              .setURL("https://top.gg/bot/1030870443005071512?s=05fa7c98112c0"),
+              .setLabel('Vote Reliable')
+              .setEmoji('<:reliable_topgg:1034324522305855561>')
+              .setStyle('Link')
+              .setURL('https://top.gg/bot/1030870443005071512?s=05fa7c98112c0'),
             new ButtonBuilder()
-              .setLabel("Support Server")
-              .setEmoji("<:reliable_support:1031443305399074836>")
+              .setLabel('Support Server')
+              .setEmoji('<:reliable_support:1031443305399074836>')
               .setStyle(ButtonStyle.Link)
-              .setURL("https://dsc.gg/reliable-support"),
+              .setURL('https://dsc.gg/reliable-support'),
             new ButtonBuilder()
-              .setLabel("Invite Reliable")
-              .setEmoji("<:reliable_invite:1031443216664371231>")
-              .setStyle("Link")
-              .setURL("https://dsc.gg/reliable-bot")
+              .setLabel('Invite Reliable')
+              .setEmoji('<:reliable_invite:1031443216664371231>')
+              .setStyle('Link')
+              .setURL('https://dsc.gg/reliable-bot'),
           );
           return (
             interaction.reply({
@@ -131,7 +147,7 @@ module.exports = {
 
         const button = buttons.get(customId);
 
-        if (!button) return new Error("There is no code for the button.");
+        if (!button) return new Error('There is no code for the button.');
 
         try {
           await button.execute(interaction, client);
@@ -144,7 +160,7 @@ module.exports = {
 
         const menu = selectMenus.get(customId);
 
-        if (!menu) return new Error("There is no code for the menu.");
+        if (!menu) return new Error('There is no code for the menu.');
 
         try {
           await menu.execute(interaction, client);
@@ -157,7 +173,7 @@ module.exports = {
 
         const modal = modals.get(customId);
 
-        if (!modal) return new Error("There is no code for the modal.");
+        if (!modal) return new Error('There is no code for the modal.');
 
         try {
           await modal.execute(interaction, client);
