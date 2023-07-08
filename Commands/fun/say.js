@@ -12,7 +12,7 @@ const { CustomHex } = require('discordjs-colors-bundle');
 const cooldown = new CommandCooldown('earnCash', ms('50s'));
 
 module.exports = {
-  developer: false,
+  beta: true,
   data: new SlashCommandBuilder()
     .setName('say')
     .setDescription("Replies with what you've said.")

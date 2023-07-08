@@ -1,25 +1,29 @@
 import { CustomRGB } from "discordjs-colors-bundle";
 import * as Musixmatch from "musixmatch-api-node";
 const { MusixmatchAPI } = Musixmatch;
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-
+const {
+  SlashCommandBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  ActionRowBuilder,
+} = require("discord.js");;
 const mxm = new MusixmatchAPI(process?.env["Musixmatch"].toString());
 
 module.exports = {
+  beta: true,
   data: new SlashCommandBuilder()
     .setName('spotify')
-    .setDescription('Spotify informations!')
+    .setDescription('Initiate the 🎵 Spotify information command to access comprehensive details.')
     .addSubcommand((sub) => 
-      sub.setName('current').setDescription('Get your current playing status')
+      sub.setName('current').setDescription('Get your current playing status.')
     ),
 
   async execute(interaction, client) {
     if (interaction.options.getSubcommand() == "current") {
+
+  try {
       const member = interaction.member;
-
-      const Embed = new EmbedBuilder()
-        .setTitle(`${interaction.user.username}'s current playing status`);
-
       const activity = member.presence.activities.find(
         (activity) => activity.type === 2 && activity.name === 'Spotify'
       );
@@ -49,28 +53,74 @@ if (semicolonCount === 1) {
 }
 
         const trackInfo = await mxm.trackSearch({ artistName: artistName, trackName: trackName });
-const hasLyrics =  trackInfo?.has_lyrics ? "Yes" : "No";
-        // const albumName = trackInfo?.album_name.toString();
-       const id = trackInfo?.track_id;
-       const deepSearch = await mxm.trackSearch({ artistName: artistName, trackName: trackName, id: id});
-       const albumName = deepSearch?.album_name;
+        const hasLyrics =  trackInfo?.has_lyrics ? "Yes" : "No";
+        const id = trackInfo?.track_id;
+        const deepSearch = await mxm.trackSearch({ artistName: artistName, trackName: trackName, id: id});
+        const albumName = deepSearch?.album_name;
         const isInstrumental = trackInfo?.instrumental ? "Yes" : "No";
         const isExplicit = trackInfo?.explicit ? "Yes" : "No"
-        Embed.addFields(
-          { name: "Track Name", value: trackName, inline: true },
-          { name: "Artist Name", value: aName, inline: true },
-          { name: "Album Name", value: `${albumName}`, inline: true },
-          { name: "Has Lyrics?", value: hasLyrics, inline: true },
-          { name: "Is Instrumental?", value: isInstrumental, inline: true},
-          { name: "Is Explicit?", value: isExplicit, inline: true }
-          
-        );
-        Embed.setColor(CustomRGB(0, 255, 170));
-      } else {
-        Embed.setDescription("You are not currently listening to Spotify.");
+        const trackRating = deepSearch?.track_rating;
+        
+        const Embed = new EmbedBuilder()
+        .setTitle(`__Your spotify status__`)
+        .setColor(`#2F3136`)
+        .setFooter({ text: "Reliable | Your trusted assistant" })
+        .setDescription(`Presenting an extensive and thorough overview of the complete information pertaining to your current Spotify listening session, including track name, artist name, album details, availability of lyrics, instrumental status, and explicit content classification. Please find the comprehensive report below, offering detailed insights into your present Spotify experience.`)
+        .addFields(
+          {
+            name: "__Track Information__",
+            value: `**\`‣\` Artist Name**: \`${aName || "N/A"}\`
+**\`‣\` Album Name**: \`${albumName || "N/A"}\`
+**\`‣\` Explicit**: \`${isExplicit}\``
+          }
+        )
+        
+   const bcomponents = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId("torbap")
+            .setLabel(`Track Name: ${trackName ?? "N/A"}`)
+            .setStyle("Secondary")
+            .setDisabled(true),
+            new ButtonBuilder()
+            .setCustomId("chudi")
+            .setLabel(`Has Lyrics?: ${hasLyrics ?? "No"}`)
+            .setStyle("Primary")
+            .setDisabled(true),
+            new ButtonBuilder()
+            .setCustomId("kutta") 
+            .setLabel(`Instrumental: ${isInstrumental ?? "Yes"}`)
+            .setStyle("Danger")
+            .setDisabled(true),
+                 new ButtonBuilder()
+            .setCustomId("kuttachuda") 
+            .setLabel(`Track Rating: ${trackRating ?? "0"}`)
+            .setStyle("Success")
+            .setDisabled(true),
+
+) 
+       return interaction.reply({ embeds: [Embed], components: [bcomponents], ephemeral: false });
+      } else { 
+      const embed1 = new EmbedBuilder()
+      .setColor(`#2F3136`)
+      .setFooter({ text: "Reliable | Your trusted assistant" })
+      .setTitle('Error | 403 Forbidden')
+      .setDescription(`<:reliable_dnd:1044914867779412078> | 
+Regrettably, it appears that you are not presently engaged in any Spotify audio playback activity. Thus, there is no current record of Spotify streaming from your account. Should you initiate playback in the future, your Spotify listening status will be promptly updated and made available for retrieval.`)
+          return interaction.reply({ embeds: [embed1], ephemeral: true });
+      }
+            } catch (e) {
+      const embed = new EmbedBuilder()
+      .setColor(`#2F3136`)
+      .setFooter({ text: "Reliable | Your trusted assistant" })
+      .setTitle('Error | 500 Internal Server')
+      .setDescription(`<:reliable_dnd:1044914867779412078> | The server encountered an unexpected condition that prevented it from fulfilling the request. It is an internal error on the server side, typically caused by misconfigurations, software bugs, or server overload. Users should contact the server administrator for resolution.`)
+
+    console.log(e)
+
+         return  interaction.reply({ embeds: [embed], ephemeral: true });
       }
 
-      return interaction.reply({ embeds: [Embed], ephemeral: true });
+       return interaction.reply({ embeds: [Embed], components: [components], ephemeral: true }); 
     }
   },
 };

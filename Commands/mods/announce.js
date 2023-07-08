@@ -7,7 +7,8 @@ const {
   ModalBuilder,
 } = require("discord.js");
 module.exports = {
-  developer: true,
+  developer: false,
+  beta: true,
   data: new SlashCommandBuilder()
     .setName("announce")
     .setDescription("Announce Something!")

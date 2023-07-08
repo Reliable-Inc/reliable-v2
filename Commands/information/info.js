@@ -20,6 +20,7 @@ const imdb = require("imdb-api");
 const mal = require("mal-scraper");
 
 module.exports = {
+  beta: true,
   data: new SlashCommandBuilder()
     .setName("info")
     .setDescription("info command")
@@ -34,7 +35,7 @@ module.exports = {
     .addSubcommand((sub) =>
       sub
         .setName("channel")
-        .setDescription("View info about a channel")
+        .setDescription("View ℹ️ info about a 📺 channel.")
         .addChannelOption((option) =>
           option
             .setName("channel")
@@ -45,7 +46,7 @@ module.exports = {
     .addSubcommand((sub) =>
       sub
         .setName("movie")
-        .setDescription("View info about a movie")
+        .setDescription("View ℹ️ info about a 🎥 movie.")
         .addStringOption((option) =>
           option
             .setName("name")
@@ -53,21 +54,11 @@ module.exports = {
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
-      sub
-        .setName("season")
-        .setDescription("View current season!")
-        .addStringOption((op) =>
-          op
-            .setName("country")
-            .setDescription("Your country, must be a valid ISO")
-            .setRequired(true)
-        )
-    )
+
     .addSubcommand((sub) =>
       sub
         .setName("covid-countries")
-        .setDescription("Track a country COVID-19 cases")
+        .setDescription("Track 🌍 a country's COVID-19 cases 📊")
         .addStringOption((op) =>
           op
             .setName("country")
@@ -78,7 +69,7 @@ module.exports = {
     .addSubcommand((sub) =>
       sub
         .setName("country")
-        .setDescription("Get information about a country")
+        .setDescription("Get ℹ️ information about a 🌍 country.")
         .addStringOption((op) =>
           op.setName("name").setDescription("Country name").setRequired(true)
         )
