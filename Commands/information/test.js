@@ -12,7 +12,7 @@ const {
 const fetch = require("node-fetch");
 
 module.exports = {
-  developer: false,
+  developer: true,
   data: new SlashCommandBuilder()
     .setName("hostevent")
     .setDescription("Using this command you can host your own events.")
