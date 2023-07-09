@@ -132,8 +132,8 @@ module.exports = {
           chalk.white(': ') +
           chalk.greenBright(`Refresing`)
       );
-
-      await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+ //mamay dekhi akhane akam kortese ;-;
+      await rest.put(Routes.applicationCommands(clientId), {
         body: commands,
       });
 
