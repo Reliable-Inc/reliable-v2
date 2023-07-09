@@ -607,66 +607,62 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
         .then((res) => res.data)
         .then((json) => {
           const embed = new EmbedBuilder()
-
             .setColor(CustomHex('#2F3136'))
-            .setTitle('NPM Searched')
+            .setTitle('__Searched__')
             .setImage(
               'https://www.bleepstatic.com/content/posts/2018/07/12/npm.png'
             )
             .setDescription(
-              `> **\`${json.description}\`**` || '**`No description`**`'
+              json.description ||
+                "I apologize, but you haven't provided any specific information about the npm package you would like a detailed and formal description for. In order to provide an accurate and relevant description, I would need to know the name or purpose of the npm package you are referring to. Please provide more details, and I'll be happy to assist you further."
             )
-            .addFields(
-              {
-                name: 'Package Name',
-                value: `> **\`${json.name}\`**`,
-                inline: false,
-              },
-              {
-                name: 'Author',
-                value: `> **\`${
-                  json.author ? json.author.name : 'Unknown'
-                }\`**`,
-                inline: false,
-              },
-              {
-                name: 'Version',
-                value: `> **\`${json['dist-tags'].latest}\`**`,
-                inline: false,
-              },
-              {
-                name: 'License',
-                value: `> **\`${json.license || 'None'}\`**`,
-                inline: true,
-              },
-              {
-                name: 'Creation Date',
-                value: `**\`${moment
-                  .utc(json.time.created)
-                  .format('YYYY/MM/DD hh:mm:ss')}\`**`,
-                inline: true,
-              },
-              {
-                name: 'Modification Date',
-                value: `> **\`${
-                  json.time.modified
-                    ? moment
-                        .utc(json.time.modified)
-                        .format('YYYY/MM/DD hh:mm:ss')
-                    : 'None'
-                }\`**`,
-                inline: true,
-              },
-              {
-                name: 'Maintainers',
-                value: `> **\`${json.maintainers
-                  .map((user) => user.name)
-                  .join(', ')}\`**`,
-                inline: true,
-              }
-            );
+            .addFields({
+              name: '__Information__',
+              value: `**\`»\` Maintainers**: \`${json.maintainers
+                .map((user) => user.name)
+                .join(', ')}\`
+**\`»\` Engines**: \`${
+                json.engines?.node ?? "Doesn't have any specific engine."
+              }\`
+**\`»\` Modification Date**: \`${
+                json.time?.modified
+                  ? moment.utc(json.time.modified).format('YYYY/MM/DD hh:mm:ss')
+                  : 'N/A'
+              }\``,
+              inline: false,
+            });
 
-          interaction.reply({ embeds: [embed] });
+          const bcomponents = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+              .setCustomId('torbap')
+              .setLabel(`Package Name: ${json.name || 'N/A'}`)
+              .setStyle('Secondary')
+              .setDisabled(true),
+            new ButtonBuilder()
+              .setCustomId('chudi')
+              .setLabel(`Author: ${json.author?.name || 'Unknown'}`)
+              .setStyle('Secondary')
+              .setDisabled(true),
+            new ButtonBuilder()
+              .setCustomId('kutta')
+              .setLabel(
+                `Creation Date: ${moment
+                  .utc(json.time?.created)
+                  .format('YYYY/MM/DD hh:mm:ss')}`
+              )
+              .setStyle('Secondary')
+              .setDisabled(true),
+            new ButtonBuilder()
+              .setCustomId('kuttachuda')
+              .setLabel(`Version: ${json['dist-tags']?.latest || 'N/A'}`)
+              .setStyle('Secondary')
+              .setDisabled(true)
+          );
+          return interaction.reply({
+            embeds: [embed],
+            components: [bcomponents],
+            ephemeral: false,
+          });
         });
     } else if (interaction.options.getSubcommand() === 'pokemon') {
       const poke2 = interaction.options.getString('name') || '';
