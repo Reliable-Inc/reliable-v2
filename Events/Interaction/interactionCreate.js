@@ -45,14 +45,14 @@ module.exports = {
                 chalk.cyan('Someone tried to use developer command') +
                 chalk.white(': ') +
                 chalk.greenBright(
-                  `${interaction.user.tag} | ${interaction.user.id}`,
-                ),
+                  `${interaction.user.tag} | ${interaction.user.id}`
+                )
             );
 
             const embed = new EmbedBuilder()
               .setTitle('__Commands Developer__')
               .setDescription(
-                '<:reliable_dnd:1044914867779412078> | Sorry, you do not have permission to use this command. This command is intended only for developers and requires special access. If you believe you should have access to this command, please contact the bot owner for further assistance. Thank you for your understanding.',
+                '<:reliable_dnd:1044914867779412078> | Sorry, you do not have permission to use this command. This command is intended only for developers and requires special access. If you believe you should have access to this command, please contact the bot owner for further assistance. Thank you for your understanding.'
               )
               .setColor(CustomHex('#2F3136'))
               .setFooter({ text: 'Reliable | Your trusted assistant' });
@@ -63,7 +63,7 @@ module.exports = {
                 .setEmoji('<:reliable_topgg:1034324522305855561>')
                 .setStyle('Link')
                 .setURL(
-                  'https://top.gg/bot/1030870443005071512?s=05fa7c98112c0',
+                  'https://top.gg/bot/1030870443005071512?s=05fa7c98112c0'
                 ),
               new ButtonBuilder()
                 .setLabel('Support Server')
@@ -74,7 +74,7 @@ module.exports = {
                 .setLabel('Invite Reliable')
                 .setEmoji('<:reliable_invite:1031443216664371231>')
                 .setStyle('Link')
-                .setURL('https://dsc.gg/reliable-bot'),
+                .setURL('https://dsc.gg/reliable-bot')
             );
             return interaction.reply({
               embeds: [embed],
@@ -91,7 +91,7 @@ module.exports = {
             const applyEmbed = new EmbedBuilder()
               .setTitle('__Beta Program__')
               .setDescription(
-                'To begin the process, we kindly request that you utilize the </apply-beta:1127199163793297408> command to submit your application for the beta program. This formal procedure ensures a comprehensive evaluation of your qualifications and compatibility. Thank you for your interest; we look forward to reviewing your application promptly.',
+                'To begin the process, we kindly request that you utilize the </apply-beta:1127199163793297408> command to submit your application for the beta program. This formal procedure ensures a comprehensive evaluation of your qualifications and compatibility. Thank you for your interest; we look forward to reviewing your application promptly.'
               )
               .setColor(`#2F3136`)
               .setFooter({ text: 'Reliable | Your trusted assistant' });
@@ -101,7 +101,7 @@ module.exports = {
                 .setEmoji('<:reliable_topgg:1034324522305855561>')
                 .setStyle('Link')
                 .setURL(
-                  'https://top.gg/bot/1030870443005071512?s=05fa7c98112c0',
+                  'https://top.gg/bot/1030870443005071512?s=05fa7c98112c0'
                 ),
               new ButtonBuilder()
                 .setLabel('Support Server')
@@ -112,7 +112,7 @@ module.exports = {
                 .setLabel('Invite Reliable')
                 .setEmoji('<:reliable_invite:1031443216664371231>')
                 .setStyle('Link')
-                .setURL('https://dsc.gg/reliable-bot'),
+                .setURL('https://dsc.gg/reliable-bot')
             );
             return interaction.reply({
               embeds: [applyEmbed],
@@ -134,7 +134,7 @@ module.exports = {
   **\`•\`** The command was used incorrectly or with invalid input.
   **\`•\`** The bot does not have the necessary permissions to perform that action.
           
-  __If you continue to experience issues, please reach out to the bot's developers for assistance. Thank you!__`,
+  __If you continue to experience issues, please reach out to the bot's developers for assistance. Thank you!__`
             )
             .setColor(CustomHex('#2F3136'))
             .setFooter({ text: '©2022 - 2023 | Reliable' });
@@ -154,7 +154,7 @@ module.exports = {
               .setLabel('Invite Reliable')
               .setEmoji('<:reliable_invite:1031443216664371231>')
               .setStyle('Link')
-              .setURL('https://dsc.gg/reliable-bot'),
+              .setURL('https://dsc.gg/reliable-bot')
           );
           return (
             interaction.reply({
