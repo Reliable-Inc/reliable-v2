@@ -1,4 +1,4 @@
-import { ButtonInteraction } from 'discord.js';
+import { ButtonInteraction, EmbedBuilder } from 'discord.js';
 import VerificationRole from '../../Schemas/VerificationSchema';
 
 module.exports = {
