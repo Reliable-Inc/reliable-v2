@@ -1,17 +1,20 @@
 'use strict';
 
-import chalk from 'chalk'
+import chalk from 'chalk';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
-import { Configuration } from './config';
+import Configuration from './config';
 dotenv.config();
 
-enum StrictErrorExpectedValues {
-  strict = 'strict',
-  string = 'string',
-  number = 'number',
-  boolean = 'boolean',
-}
+const { cyan, blue, greenBright, red, white, yellow, bold, whiteBright, gray } =
+  chalk;
+
+// enum StrictErrorExpectedValues {
+//   strict = 'strict',
+//   string = 'string',
+//   number = 'number',
+//   boolean = 'boolean',
+// }
 
 /**
  * ConfigurationError
@@ -56,15 +59,11 @@ class StrictError extends Error {
 
   public toString() {
     const stack = this.stack?.split('\n').slice(2).join('\n');
-    const received = this.received
-      ? `${chalk.gray('|')} ${chalk.gray(this.received)}`
-      : '';
+    const received = this.received ? `${gray('|')} ${gray(this.received)}` : '';
 
-    return `${chalk.red(this.name)} > ${chalk.yellow(
-      this.message
-    )}\n${chalk.red('Expected:')} ${this.expected}\n${chalk.red('Received:')} ${
-      this.received
-    }\n\n${received}\n\n${chalk.gray(stack)}`;
+    return `${red(this.name)} > ${yellow(this.message)}\n${red('Expected:')} ${
+      this.expected
+    }\n${red('Received:')} ${this.received}\n\n${received}\n\n${gray(stack)}`;
   }
 }
 
@@ -113,30 +112,28 @@ const Token = process?.env['Token'] ?? '';
 // ConfiguratonError
 if (!Token) {
   const errorMessage =
-    chalk.cyan('[ BUG Checker ]') +
-    chalk.white.bold(' | ') +
-    chalk.blue(`${new Date().toLocaleDateString()}`) +
-    chalk.white.bold(' | ') +
-    chalk.whiteBright("The token isn't provided in .env folder.") +
-    chalk.white.bold(' | ') +
-    chalk.yellow.bold('Solution') +
-    chalk.white(': ') +
-    chalk.bold.greenBright(
-      `Please provide the Token in your environment variables.`
-    );
+    cyan('[ BUG Checker ]') +
+    white.bold(' | ') +
+    blue(`${new Date().toLocaleDateString()}`) +
+    white.bold(' | ') +
+    whiteBright("The token isn't provided in .env folder.") +
+    white.bold(' | ') +
+    yellow.bold('Solution') +
+    white(': ') +
+    bold.greenBright(`Please provide the Token in your environment variables.`);
   throwError('Custom', 'ConfigurationError', `${errorMessage}`);
 }
 if (!process?.env['MongoDB'] ?? '') {
   const errorMessage =
-    chalk.cyan('[ BUG Checker ]') +
-    chalk.white.bold(' | ') +
-    chalk.blue(`${new Date().toLocaleDateString()}`) +
-    chalk.white.bold(' | ') +
-    chalk.whiteBright("The MongoDB URL isn't provided in .env folder.") +
-    chalk.white.bold(' | ') +
-    chalk.yellow.bold('Solution') +
-    chalk.white(': ') +
-    chalk.bold.greenBright(
+    cyan('[ BUG Checker ]') +
+    white.bold(' | ') +
+    blue(`${new Date().toLocaleDateString()}`) +
+    white.bold(' | ') +
+    whiteBright("The MongoDB URL isn't provided in .env folder.") +
+    white.bold(' | ') +
+    yellow.bold('Solution') +
+    white(': ') +
+    bold.greenBright(
       `Please provide the MongoDB URL in your environment variables.`
     );
   throwError('Custom', 'ConfigurationError', `${errorMessage}`);
@@ -144,15 +141,15 @@ if (!process?.env['MongoDB'] ?? '') {
 
 if (!process?.env['MongoDB'] ?? ''.includes('mongodb+srv://')) {
   const errorMessage =
-    chalk.cyan('[ BUG Checker ]') +
-    chalk.white.bold(' | ') +
-    chalk.blue(`${new Date().toLocaleDateString()}`) +
-    chalk.white.bold(' | ') +
-    chalk.whiteBright("You've provided an invalid MongoDB Url.") +
-    chalk.white.bold(' | ') +
-    chalk.yellow.bold('Solution') +
-    chalk.white(': ') +
-    chalk.bold.greenBright(
+    cyan('[ BUG Checker ]') +
+    white.bold(' | ') +
+    blue(`${new Date().toLocaleDateString()}`) +
+    white.bold(' | ') +
+    whiteBright("You've provided an invalid MongoDB Url.") +
+    white.bold(' | ') +
+    yellow.bold('Solution') +
+    white(': ') +
+    bold.greenBright(
       `Please check the MongoDB URL in your environment variables.`
     );
   throwError('Custom', 'ConfigurationError', `${errorMessage}`);
@@ -160,15 +157,15 @@ if (!process?.env['MongoDB'] ?? ''.includes('mongodb+srv://')) {
 
 if (!process?.env['ClientId'] ?? '') {
   const errorMessage =
-    chalk.greenBright('[ BUG Checker ]') +
-    chalk.white.bold(' | ') +
-    chalk.blue(`${new Date().toLocaleDateString()}`) +
-    chalk.white.bold(' | ') +
-    chalk.whiteBright("Client ID isn't provided in .env file") +
-    chalk.white.bold(' | ') +
-    chalk.yellow.bold('Solution') +
-    chalk.white(': ') +
-    chalk.bold.cyanBright(
+    greenBright('[ BUG Checker ]') +
+    white.bold(' | ') +
+    blue(`${new Date().toLocaleDateString()}`) +
+    white.bold(' | ') +
+    whiteBright("Client ID isn't provided in .env file") +
+    white.bold(' | ') +
+    yellow.bold('Solution') +
+    white(': ') +
+    bold.cyanBright(
       `Please make sure to add the Client ID to the .env file and restart the bot.`
     );
   throwError('Custom', 'ConfigurationError', `${errorMessage}`);
