@@ -18,6 +18,7 @@ const twitter = require("twitter-api.js");
 const translate = require("@iamtraction/google-translate");
 const imdb = require("imdb-api");
 const mal = require("mal-scraper");
+const { json } = require("stream/consumers");
 
 module.exports = {
   beta: true,
@@ -218,7 +219,7 @@ module.exports = {
         )
     )
     .addSubcommand((sub) =>
-      sub.setName("iss-location").setDescription("Shows ISS location")
+      sub.setName("space").setDescription("Shows latest space informations.")
     ),
 
   async execute(interaction, client) {
@@ -856,7 +857,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
 
           if (roleString.length + totalLength > maxFieldLength) break;
 
-          totalLength += roleString.length + 1; // +1 as it's likely we want to display them with a space between each role, which counts towards the limit.
+          totalLength += roleString.length + 1; 
           result.push(roleString);
         }
 
@@ -1292,7 +1293,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
         .setColor("#2F3136")
         .setFooter({ text: "©2022 - 2023 | Reliable" });
       interaction.reply({ embeds: [embed], ephemeral: true });
-    } else if (interaction.options.getSubcommand() === "iss-location") {
+    } else if (interaction.options.getSubcommand() === "space") {
       fetch("http://api.open-notify.org/iss-now.json")
         .then((res) => res.json())
         .then((out) => {
@@ -1300,26 +1301,21 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           var position = iss_info["iss_position"];
           var latitude = position["latitude"];
           var longitude = position["longitude"];
-
+              
           const Embed = new EmbedBuilder()
-            .setTitle("International Space Station Location")
+            .setTitle("__Space Information__")
+            .setDescription(`
+            Space refers to the vast and empty expanse beyond Earth's atmosphere, characterized by a near-vacuum environment. It encompasses celestial bodies, galaxies, and cosmic phenomena. Space exploration enables us to study the universe, its origins, and its mysteries, providing insights into our place in the cosmos.`)
             .setColor("#2F3136")
             .addFields(
               {
-                name: "**`•`** Latitude",
-                value: `> **\`${latitude}\`**`,
-                inline: true,
-              },
-              {
-                name: "**`•`** Longitude",
-                value: `> **\`${longitude}\`**`,
+                name: "__ISS Information__",
+                value: `**\`»\` Latitude**: \`${latitude}\`
+**\`»\` Longitude**: \`${longitude}\``,
                 inline: true,
               }
             )
-            .setImage(
-              `http://c.files.bbci.co.uk/8C58/production/_115182953_issspaceindexsml.jpg`
-            )
-            .setFooter({ text: "©2022 - 2023 | Reliable" })
+            .setFooter({ text: "Reliable | Your trusted assistant" })
             .setTimestamp();
           interaction.reply({ embeds: [Embed] });
         });
