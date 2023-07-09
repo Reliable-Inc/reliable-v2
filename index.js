@@ -4,20 +4,79 @@
 require('./checker.js');
 
 // All Modules/File Loading
+import * as fs from "fs";
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import { Client, Collection, GatewayIntentBits, Partials, EmbedBuilder } from 'discord.js';
+import dotenv from 'dotenv';
+import chalk from 'chalk';
+import ServerKey from './Schemas/ServerKey';
+import * as cb from 'discordjs-colors-bundle';
+import Report from "./Schemas/Reports";
 
-const {
-  Client,
-  Collection,
-  GatewayIntentBits,
-  Partials,
-} = require('discord.js');
-const dotenv = require('dotenv');
-const chalk = require('chalk');
-const express = require('express');
-const fs = require('fs');
+dotenv.config();
+
 const app = express();
+const port = 3000;
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // Express Server
+app.use(cors());
+app.use(express.json());
+
+app.get('/generate-server-key', async (req, res) => {
+  try {
+    const secretKey = process.env.SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('SECRET_KEY is not set in the environment variables.');
+    }
+
+    const serverKey = crypto.createHmac('sha256', secretKey).digest('hex');
+
+    const newServerKey = new ServerKey({ key: serverKey });
+    await newServerKey.save();
+
+    return res.status(200).json({ key: serverKey });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      hint: {
+        error: err.message,
+      },
+    });
+  }
+});
+
+const validateServerKey = async (req, res, next) => {
+  try {
+    const apiKey = req.headers['x-server-key'] || req.query.serverkey;
+    if (!apiKey) {
+      return res.status(401).json({ message: 'Server key is required.' });
+    }
+
+    const serverKey = await ServerKey.findOne({ key: apiKey });
+    if (!serverKey) {
+      return res.status(401).json({ message: 'Invalid API key.' });
+    }
+
+    next();
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      hint: {
+        error: err.message,
+      },
+    });
+  }
+};
+
 app.get('/', (req, res) => {
   const currentDate = new Date().toLocaleString();
   const clientIP = req.ip;
@@ -32,13 +91,10 @@ app.get('/', (req, res) => {
   res.status(200).set('Content-Type', 'text/html').send(styledMessage);
 });
 
-app.get('/api/v1/client.users', (req, res) => {
+app.get('/api/v1/client.users', validateServerKey, (req, res) => {
   try {
-    const clientTotalUsers = client?.guilds?.cache?.reduce(
-      (a, b) => a + b.memberCount,
-      0,
-    );
-    return res.json({
+    const clientTotalUsers = client?.guilds?.cache?.reduce((a, b) => a + b.memberCount, 0);
+    return res.status(200).json({
       message: {
         body: {
           status: {
@@ -51,27 +107,300 @@ app.get('/api/v1/client.users', (req, res) => {
           },
         },
       },
-    }).status(200);
+    });
   } catch (err) {
-    return (
-      res.json({
-        message: {
-          body: {
-            status: {
-              message: 'Internal Server Error',
-              code: 500,
-            },
-            hint: {
-              error: err?.message,
-            },
-          },
-        },
-      }).status(500) && console.error(err)
-    );
+    console.error(err);
+    return res.status(500).json({
+      message: 'Internal Server Error',
+      hint: {
+        error: err?.message,
+      },
+    });
   }
 });
 
-const port = 3000;
+app.get('/api/v1/client.servers', validateServerKey, (req, res) => {
+  try {
+    const clientTotalServers = client?.guilds?.cache?.size;
+    return res.status(200).json({
+      message: {
+        body: {
+          status: {
+            message: 'OK',
+            code: 200,
+          },
+          client: {
+            info: `Name: ${client.user.tag}`,
+            total_servers: clientTotalServers,
+          },
+        },
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: {
+        body: {
+          status: {
+            message: 'Internal Server Error',
+            code: 500,
+          },
+          hint: {
+            error: err?.message,
+          },
+        },
+      },
+    });
+  }
+});
+
+app.get('/api/v1/client.info', validateServerKey, (req, res) => {
+  try {
+    const clientTotalServers = client?.guilds?.cache?.size;
+    const clientTotalUsers = client?.guilds?.cache?.reduce((a, b) => a + b.memberCount, 0);
+
+    return res.status(200).json({
+      message: {
+        body: {
+          status: {
+            message: 'OK',
+            code: 200,
+          },
+          client: {
+            info: {
+              name: client?.user.tag,
+              total_guilds: clientTotalServers,
+              total_users: clientTotalUsers,
+            },
+          },
+        },
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: {
+        body: {
+          status: {
+            message: 'Internal Server Error',
+            code: 500,
+          },
+          hint: {
+            error: err?.message,
+          },
+        },
+      },
+    });
+  }
+});
+
+app.post('/api/v1/embed.send', validateServerKey, async (req, res) => {
+  const { e_title, e_desc, e_footer = 'Reliable', e_color = 'Red',
+
+channel_id } = req.query;
+
+  const color = e_color;
+
+  if (!e_title || !e_desc || !channel_id) {
+    return res.status(404).json({
+      message: {
+        body: {
+          status: {
+            message: 'Not found',
+            code: 404,
+          },
+          error: {
+            hint: 'A required value is not provided.',
+            values: ['e_title', 'e_desc', 'channel_id'],
+          },
+        },
+      },
+    });
+  }
+
+  const channel = client?.channels.cache.get(channel_id.toString());
+  const desc = e_desc.replace(/\\n/g, '\n');
+
+  const Embed = new EmbedBuilder()
+    .setTitle(e_title.toString())
+    .setDescription(desc.toString())
+    .setColor(color.toString() in cb.Colors ? cb.Colors[e_color.toString()] : e_color.toString())
+    .setFooter({ text: e_footer.toString() });
+
+  try {
+    await channel.send({ embeds: [Embed] });
+    res.status(200).json({
+      message: {
+        body: {
+          status: {
+            message: 'OK',
+            code: 200,
+          },
+          sent: 1,
+          embed_body: {
+            title: e_title,
+            description: desc,
+            color: e_color,
+            footer: e_footer,
+            to_channel: channel_id,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({
+      message: {
+        body: {
+          status: {
+            message: 'Internal Server Error',
+            code: 500,
+          },
+          error: {
+            hint: 'An error occurred while sending the message.',
+          },
+        },
+      },
+    });
+  }
+});
+
+app.post('/api/v1/bug.submit', validateServerKey, async (req, res) => {
+  const {
+    bug_title,
+    bug_desc,
+    bug_exp,
+    reported_by,
+    reported_pfp,
+    reported_date,
+    e_footer = 'Reliable',
+    e_color = 'Red',
+  } = req.query;
+
+  const channelId = "1029808315481460798";
+
+  if (!bug_title || !bug_desc || !bug_exp || !reported_by || !reported_pfp || !reported_date) {
+    return res.status(404).json({
+      message: {
+        body: {
+          status: {
+            message: 'Not found',
+            code: 404,
+          },
+          error: {
+            hint: 'A required value was not provided.',
+            values: ['bug_title', 'bug_desc', 'bug_exp', 'reported_by', 'reported_pfp', 'reported_date'],
+          },
+        },
+      },
+    });
+  }
+
+  const newReport = new Report({
+    BugTitle: bug_title,
+    BugDescription: bug_desc,
+    BugExpectation: bug_exp,
+    ReportedBy: reported_by,
+    ReportedPfp: reported_pfp,
+    ReportedDate: reported_date,
+  });
+
+  const channel = client?.channels.cache.get(channelId.toString());
+  const desc = bug_desc.replace(/\\n/g, '\n');
+
+  const Embed = new EmbedBuilder()
+    .setTitle(bug_title.toString())
+    .setDescription(`${desc.toString()}\n\n${bug_exp.toString()}\n\n### Reported By: ${reported_by}`)
+    .setColor(cb.Colors[e_color.toString()] || e_color.toString())
+    .setFooter({ text: e_footer.toString() })
+    .setThumbnail(reported_pfp);
+
+  try {
+    await channel.send({ embeds: [Embed] });
+    await newReport.save();
+
+    res.status(200).json({
+      message: {
+        body: {
+          status: {
+            message: 'OK',
+            code: 200,
+          },
+          sent: 1,
+          embed_body: {
+            bugTitle: bug_title,
+            description: {
+              bugDescription: bug_desc,
+              bugExpectation: bug_exp,
+            },
+            reports: {
+              reported_by: reported_by,
+              reported_user_pfp: reported_pfp,
+              reported_date: reported_date,
+            },
+            color: e_color,
+            footer: e_footer,
+            to_channel: channelId,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({
+      message: {
+        body: {
+          status: {
+            message: 'Internal Server Error',
+            code: 500,
+          },
+          error: {
+            hint: 'An error occurred while sending the message.',
+          },
+        },
+      },
+    });
+  }
+});
+
+app.get('/api/v1/bug.views', validateServerKey, async (req, res) => {
+  try {
+    const bugReports = await Report.find();
+
+    if (!bugReports) {
+      return res.status(200).json({ message: "There's no bug reports." });
+    }
+
+    res.status(200).json(bugReports);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Internal Server Error',
+      error: error.message,
+    });
+  }
+});
+
+// DELETE route: Delete a specific bug report
+app.delete('/api/v1/bug.delete', validateServerKey, async (req, res) => {
+  const { bug_report_title, bug_report_by } = req.query;
+
+  try {
+    await Report.findOneAndDelete({
+      BugTitle: bug_report_title,
+      ReportedBy: bug_report_by,
+    });
+
+    res.status(200).json({
+      message: 'Bug report deleted successfully',
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Internal Server Error',
+      error: error.message,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(
     chalk.cyan('[ INFORMATION ]') +
@@ -83,8 +412,6 @@ app.listen(port, () => {
       chalk.greenBright(`${port}`),
   );
 });
-dotenv.config();
-
 // Intents Zone
 
 const client = new Client({
