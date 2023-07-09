@@ -98,14 +98,12 @@ module.exports = {
     if (interaction.options.getSubcommand() == 'verification') {
       roleId = interaction.options.getRole('role').id;
       const title =
-        interaction.options.getString('embed-title') ??
-        `${interaction.guild.name} - Verification`;
+        interaction.options.getString('embed-title');
       const description =
-        interaction.options.getString('description') ??
-        `Click the button below to get the <@&${roleId}> role`;
+        interaction.options.getString('description');
       const footerText =
-        interaction.options.getString('footer') ?? `${interaction.guild.name}`;
-      const color = interaction.options.getString('color') ?? 'SpringGreen';
+        interaction.options.getString('footer');
+      const color = interaction.options.getString('color') ?? '#2F3136';
       const image = interaction.options.getString('image') ?? 0;
       const channelId = interaction.options.getChannel('channel').id;
       const channel = client?.channels.cache.get(channelId);
@@ -113,10 +111,10 @@ module.exports = {
         (r) => r.name === roleId
       );
       const btnColor =
-        interaction?.options.getString('button-color') ?? 'success';
+        interaction?.options.getString('button-color') ?? 'secondary';
       const btnTitle =
-        interaction?.options.getString('button-name') ?? 'Verify';
-      const btnEmoji = interaction?.options.getString('button-emoji') ?? '✅';
+        interaction?.options.getString('button-name') ?? 'Verification';
+      const btnEmoji = interaction?.options.getString('button-emoji') ?? '<:reliable_right:1042843202429919272>';
       // RoleMap.set('roleId', roleId);
       const guildId = interaction?.guild.id;
       const Embed = new EmbedBuilder();
@@ -137,9 +135,15 @@ module.exports = {
 
       if (image) {
         Embed.setColor(Colors[color] || color)
-          .setTitle(title)
-          .setDescription(description)
-          .setFooter({ text: footerText })
+          .setTitle(`${title || `Verification for ${interaction.guild.name}`}`)
+          .setDescription(`${description || 'We kindly invite you to click the grey button provided below to acquire the coveted role mentioned subsequently. This esteemed role will grant you access to exclusive privileges and enhanced functionalities within our community. By initiating this action, you will embark upon a journey of elevated engagement and enriched experiences. Seize the opportunity to unlock the potential that awaits you.'}`)
+          .setFooter({ text: `${footerText || 'Reliable | Your trusted assistant'}` }) 
+          .addFields(
+            {
+              name: "__Role__",
+              value: `**\`»\`** <@&${roleId}>`
+            }
+          )
           .setImage(image)
           .setTimestamp();
         if (btnColor === 'success') {
@@ -157,9 +161,15 @@ module.exports = {
         return channel.send({ embeds: [Embed], components: [buttons] });
       } else {
         Embed.setColor(Colors[color] || color)
-          .setTitle(title)
-          .setDescription(description)
-          .setFooter({ text: footerText })
+        .setTitle(`${title || `Verification for ${interaction.guild.name}`}`)
+        .addFields(
+          {
+            name: "__Role__",
+            value: `**\`»\`** <@&${roleId}>`
+          }
+        )
+        .setDescription(`${description || 'We kindly invite you to click the grey button provided below to acquire the coveted role mentioned subsequently. This esteemed role will grant you access to exclusive privileges and enhanced functionalities within our community. By initiating this action, you will embark upon a journey of elevated engagement and enriched experiences. Seize the opportunity to unlock the potential that awaits you.'}`)
+        .setFooter({ text: `${footerText || 'Reliable | Your trusted assistant'}` }) 
           .setTimestamp();
         if (btnColor === 'success') {
           button.setStyle(ButtonStyle.Success);
