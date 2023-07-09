@@ -1,21 +1,21 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
 const BetaTestSchema = new Schema({
   userID: {
     type: Number,
-    required: true
+    required: true,
   },
   username: {
     type: String,
-    required: true
+    required: true,
   },
   addedBy: {
     type: String,
-    required: true
+    required: true,
   },
 });
 
-const BetaTestUsers = model("BetaTestUsers", BetaTestSchema);
+const BetaTestUsers = model('BetaTestUsers', BetaTestSchema);
 
 export default BetaTestUsers;
