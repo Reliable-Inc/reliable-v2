@@ -4,18 +4,24 @@
 require('./checker.js');
 
 // All Modules/File Loading
-import * as fs from "fs";
+import * as fs from 'fs';
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import { Client, Collection, GatewayIntentBits, Partials, EmbedBuilder } from 'discord.js';
+import {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  Partials,
+  EmbedBuilder,
+} from 'discord.js';
 import dotenv from 'dotenv';
 import chalk from 'chalk';
 import ServerKey from './Schemas/ServerKey';
 import * as cb from 'discordjs-colors-bundle';
-import Report from "./Schemas/Reports";
+import Report from './Schemas/Reports';
 
 dotenv.config();
 
@@ -93,7 +99,10 @@ app.get('/', (req, res) => {
 
 app.get('/api/v1/client.users', validateServerKey, (req, res) => {
   try {
-    const clientTotalUsers = client?.guilds?.cache?.reduce((a, b) => a + b.memberCount, 0);
+    const clientTotalUsers = client?.guilds?.cache?.reduce(
+      (a, b) => a + b.memberCount,
+      0
+    );
     return res.status(200).json({
       message: {
         body: {
@@ -157,7 +166,10 @@ app.get('/api/v1/client.servers', validateServerKey, (req, res) => {
 app.get('/api/v1/client.info', validateServerKey, (req, res) => {
   try {
     const clientTotalServers = client?.guilds?.cache?.size;
-    const clientTotalUsers = client?.guilds?.cache?.reduce((a, b) => a + b.memberCount, 0);
+    const clientTotalUsers = client?.guilds?.cache?.reduce(
+      (a, b) => a + b.memberCount,
+      0
+    );
 
     return res.status(200).json({
       message: {
@@ -195,9 +207,14 @@ app.get('/api/v1/client.info', validateServerKey, (req, res) => {
 });
 
 app.post('/api/v1/embed.send', validateServerKey, async (req, res) => {
-  const { e_title, e_desc, e_footer = 'Reliable', e_color = 'Red',
+  const {
+    e_title,
+    e_desc,
+    e_footer = 'Reliable',
+    e_color = 'Red',
 
-channel_id } = req.query;
+    channel_id,
+  } = req.query;
 
   const color = e_color;
 
@@ -224,7 +241,11 @@ channel_id } = req.query;
   const Embed = new EmbedBuilder()
     .setTitle(e_title.toString())
     .setDescription(desc.toString())
-    .setColor(color.toString() in cb.Colors ? cb.Colors[e_color.toString()] : e_color.toString())
+    .setColor(
+      color.toString() in cb.Colors
+        ? cb.Colors[e_color.toString()]
+        : e_color.toString()
+    )
     .setFooter({ text: e_footer.toString() });
 
   try {
@@ -277,9 +298,16 @@ app.post('/api/v1/bug.submit', validateServerKey, async (req, res) => {
     e_color = 'Red',
   } = req.query;
 
-  const channelId = "1029808315481460798";
+  const channelId = '1029808315481460798';
 
-  if (!bug_title || !bug_desc || !bug_exp || !reported_by || !reported_pfp || !reported_date) {
+  if (
+    !bug_title ||
+    !bug_desc ||
+    !bug_exp ||
+    !reported_by ||
+    !reported_pfp ||
+    !reported_date
+  ) {
     return res.status(404).json({
       message: {
         body: {
@@ -289,7 +317,14 @@ app.post('/api/v1/bug.submit', validateServerKey, async (req, res) => {
           },
           error: {
             hint: 'A required value was not provided.',
-            values: ['bug_title', 'bug_desc', 'bug_exp', 'reported_by', 'reported_pfp', 'reported_date'],
+            values: [
+              'bug_title',
+              'bug_desc',
+              'bug_exp',
+              'reported_by',
+              'reported_pfp',
+              'reported_date',
+            ],
           },
         },
       },
@@ -310,7 +345,9 @@ app.post('/api/v1/bug.submit', validateServerKey, async (req, res) => {
 
   const Embed = new EmbedBuilder()
     .setTitle(bug_title.toString())
-    .setDescription(`${desc.toString()}\n\n${bug_exp.toString()}\n\n### Reported By: ${reported_by}`)
+    .setDescription(
+      `${desc.toString()}\n\n${bug_exp.toString()}\n\n### Reported By: ${reported_by}`
+    )
     .setColor(cb.Colors[e_color.toString()] || e_color.toString())
     .setFooter({ text: e_footer.toString() })
     .setThumbnail(reported_pfp);
@@ -409,7 +446,7 @@ app.listen(port, () => {
       chalk.white.bold(' | ') +
       chalk.cyan('Server started on port') +
       chalk.white(': ') +
-      chalk.greenBright(`${port}`),
+      chalk.greenBright(`${port}`)
   );
 });
 // Intents Zone
@@ -530,7 +567,7 @@ console.log(
     chalk.white.bold(' | ') +
     chalk.cyan('AntiCrash Connection') +
     chalk.white(': ') +
-    chalk.greenBright(`Connected`),
+    chalk.greenBright(`Connected`)
 );
 process.on('unhandledRejection', (reason, p) => {
   console.log(
@@ -540,7 +577,7 @@ process.on('unhandledRejection', (reason, p) => {
       chalk.white.bold(' | ') +
       chalk.cyan('Unhandled') +
       chalk.white(': ') +
-      chalk.red.bold(`Rejection/Catch`),
+      chalk.red.bold(`Rejection/Catch`)
   );
   console.log(reason, p);
 });
@@ -552,7 +589,7 @@ process.on('uncaughtException', (err, origin) => {
       chalk.white.bold(' | ') +
       chalk.cyan('Uncaught') +
       chalk.white(': ') +
-      chalk.red.bold(`Exception/Catch`),
+      chalk.red.bold(`Exception/Catch`)
   );
   console.log(err, origin);
 });
@@ -564,7 +601,7 @@ process.on('uncaughtExceptionMonitor', (err, origin) => {
       chalk.white.bold(' | ') +
       chalk.cyan('Uncaught') +
       chalk.white(': ') +
-      chalk.red.bold(`Exception/Catch (MONITOR)`),
+      chalk.red.bold(`Exception/Catch (MONITOR)`)
   );
   console.log(err, origin);
 });
