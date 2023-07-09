@@ -21,8 +21,8 @@ module.exports = {
           op
             .setName('user')
             .setDescription('The user you want to add beta.')
-            .setRequired(true),
-        ),
+            .setRequired(true)
+        )
     )
     .addSubcommand((sub) =>
       sub
@@ -32,8 +32,8 @@ module.exports = {
           op
             .setName('user')
             .setDescription('The user you want to remove from beta.')
-            .setRequired(true),
-        ),
+            .setRequired(true)
+        )
     ),
   /**
    * @param {ChatInputCommandInteraction} interaction
@@ -45,7 +45,7 @@ module.exports = {
       const SuccessEmbed = new EmbedBuilder()
         .setTitle('Success')
         .setDescription(
-          `Successfully added <@${user?.username}> to the beta test program!`,
+          `Successfully added <@${user?.username}> to the beta test program!`
         )
         .setFooter({ text: `Beta test added by ${interaction.user.username}` })
         .setColor(cb.Colors['SpringGreen']);
@@ -81,7 +81,7 @@ module.exports = {
       const SuccessEmbed = new EmbedBuilder()
         .setTitle('Success')
         .setDescription(
-          `Successfully removed <@${user?.username}> from the beta test program!`,
+          `Successfully removed <@${user?.username}> from the beta test program!`
         )
         .setFooter({
           text: `Beta test removed by ${interaction.user.username}`,
@@ -97,7 +97,7 @@ module.exports = {
 
       if (!existingUser) {
         interaction.reply(
-          'The user is not in the database, add them first in order to remove.',
+          'The user is not in the database, add them first in order to remove.'
         );
         return;
       }
