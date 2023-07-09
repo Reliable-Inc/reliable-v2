@@ -1,5 +1,5 @@
 const { Client, Events, ActivityType } = require('discord.js');
-const { Configuration } = require('../../config');
+const Configuration = require('../../config');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const mongoose = require('mongoose');
@@ -9,7 +9,7 @@ dotenv.config();
 const MongoURL = process.env['MongoDB'];
 const chalk = require('chalk');
 const clientId = process.env['ClientId'];
-const guildId = Configuration.guildId;
+const guildId = Configuration.default.guildId;
 
 module.exports = {
   name: Events.ClientReady,
@@ -25,7 +25,7 @@ module.exports = {
     console.log(
       chalk.white.bold('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫') +
         chalk.blue.bold('Bot Info') +
-        chalk.white.bold('┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'),
+        chalk.white.bold('┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
     );
     console.log(
       chalk.white(
@@ -33,53 +33,53 @@ module.exports = {
           client.guilds.cache.reduce((a, b) => a + b.memberCount, 0) > 1
             ? 'Users:'
             : 'User:'
-        }`,
+        }`
       ),
       chalk.red(
-        `${client?.guilds?.cache?.reduce((a, b) => a + b.memberCount, 0)}`,
+        `${client?.guilds?.cache?.reduce((a, b) => a + b.memberCount, 0)}`
       ),
       chalk.white('||'),
       chalk.white(
-        `${client?.guilds?.cache?.size > 1 ? 'Servers:' : 'Server:'}`,
+        `${client?.guilds?.cache?.size > 1 ? 'Servers:' : 'Server:'}`
       ),
-      chalk.red(`${client?.guilds?.cache?.size}`),
+      chalk.red(`${client?.guilds?.cache?.size}`)
     );
     console.log(
       chalk.white(`Prefix:` + chalk.red(' /')),
       chalk.white('||'),
       chalk.white(`Commands:`),
-      chalk.red(`${client.commands.size}`),
+      chalk.red(`${client.commands.size}`)
     );
 
     console.log('');
     console.log(
       chalk.white.bold('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫') +
         chalk.blue.bold('Statistics') +
-        chalk.white.bold('┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'),
+        chalk.white.bold('┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
     );
     console.log(
       chalk.white(`Running on Node`),
       chalk.green(process.version),
       chalk.white('on'),
-      chalk.green(`${process.platform} ${process.arch}`),
+      chalk.green(`${process.platform} ${process.arch}`)
     );
     console.log(
       chalk.white('Memory:'),
       chalk.green(`${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}`),
-      chalk.white('MB'),
+      chalk.white('MB')
     );
     console.log(
       chalk.white('RSS:'),
       chalk.green(
-        `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}`,
+        `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}`
       ),
-      chalk.white('MB'),
+      chalk.white('MB')
     );
     console.log('');
     console.log(
       chalk.white.bold('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫') +
         chalk.blue.bold('Client Status') +
-        chalk.white.bold('┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'),
+        chalk.white.bold('┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
     );
 
     mongoose.set('strictQuery', true);
@@ -97,7 +97,7 @@ module.exports = {
             chalk.white.bold(' | ') +
             chalk.cyan('Mongo DB Connection') +
             chalk.white(': ') +
-            chalk.greenBright(`Connected`),
+            chalk.greenBright(`Connected`)
         );
       });
     console.log(
@@ -107,7 +107,7 @@ module.exports = {
         chalk.white.bold(' | ') +
         chalk.cyan('Mongo DB Connection') +
         chalk.white(': ') +
-        chalk.greenBright(`Disconnected`),
+        chalk.greenBright(`Disconnected`)
     );
     console.log(
       chalk.cyan('[ INFORMATION ]') +
@@ -116,7 +116,7 @@ module.exports = {
         chalk.white.bold(' | ') +
         chalk.cyan('Logged in as') +
         chalk.white(': ') +
-        chalk.greenBright(`${client.user.tag}`),
+        chalk.greenBright(`${client.user.tag}`)
     );
     const commands = client.commands.map(({ data }) => data?.toJSON());
 
@@ -130,7 +130,7 @@ module.exports = {
           chalk.white.bold(' | ') +
           chalk.cyan('Application Commands (/)') +
           chalk.white(': ') +
-          chalk.greenBright(`Refresing`),
+          chalk.greenBright(`Refresing`)
       );
 
       await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
@@ -144,8 +144,13 @@ module.exports = {
           chalk.white.bold(' | ') +
           chalk.cyan('Slash Commands (/)') +
           chalk.white(': ') +
-          chalk.greenBright(`Connected`),
+          chalk.greenBright(`Refreshed`)
       );
+
+      client?.user.setStatus(Configuration.default.botPresence.status);
+      client?.user.setActivity(Configuration.default.botPresence.activity, {
+        type: Configuration.default.botPresence.activityType,
+      });
     } catch (error) {
       console.log(
         chalk.greenBright('[ ANTICRASH ]') +
@@ -154,7 +159,7 @@ module.exports = {
           chalk.white.bold(' | ') +
           chalk.cyan('Error reloading application (/) commands') +
           chalk.white(': ') +
-          chalk.red.bold(error),
+          chalk.red.bold(error)
       );
     }
   },
