@@ -3,7 +3,7 @@ import * as cb from "discordjs-colors-bundle";
 
 module.exports = {
   data: new SlashCommandBuilder()
-  .setName("beta_apply")
+  .setName("apply-beta")
   .setDescription(`Kindly submit your formal application for our exclusive beta program participation.`),
   
   /** 
