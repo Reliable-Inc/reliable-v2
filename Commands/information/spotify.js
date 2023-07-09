@@ -84,21 +84,20 @@ if (semicolonCount === 1) {
             new ButtonBuilder()
             .setCustomId("chudi")
             .setLabel(`Has Lyrics?: ${hasLyrics ?? "No"}`)
-            .setStyle("Primary")
+            .setStyle("Secondary")
             .setDisabled(true),
             new ButtonBuilder()
             .setCustomId("kutta") 
             .setLabel(`Instrumental: ${isInstrumental ?? "Yes"}`)
-            .setStyle("Danger")
+            .setStyle("Secondary")
             .setDisabled(true),
-                 new ButtonBuilder()
+            new ButtonBuilder()
             .setCustomId("kuttachuda") 
             .setLabel(`Track Rating: ${trackRating ?? "0"}`)
-            .setStyle("Success")
-            .setDisabled(true),
-
+            .setStyle("Secondary")
+            .setDisabled(true)
 ) 
-       return interaction.reply({ embeds: [Embed], components: [bcomponents], ephemeral: false });
+       return interaction.reply({ embeds: [Embed], components: [bcomponents], ephemeral: true });
       } else { 
       const embed1 = new EmbedBuilder()
       .setColor(`#2F3136`)
