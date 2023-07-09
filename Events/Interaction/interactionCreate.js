@@ -11,7 +11,7 @@ const {
 const { Configuration } = require('../../config');
 const chalk = require('chalk');
 const { CustomHex, CustomRGB } = require('discordjs-colors-bundle');
-import BetaTestUsers from "../../Schemas/BetaTest";
+import BetaTestUsers from '../../Schemas/BetaTest';
 
 module.exports = {
   name: Events.InteractionCreate,
@@ -50,12 +50,12 @@ module.exports = {
             );
 
             const embed = new EmbedBuilder()
-              .setTitle('Commands - Developer')
+              .setTitle('__Commands Developer__')
               .setDescription(
-                '> **Sorry, you do not have permission to use this command. This command is intended only for developers and requires special access. If you believe you should have access to this command, please contact the bot owner for further assistance. Thank you for your understanding.**',
+                '<:reliable_dnd:1044914867779412078> | Sorry, you do not have permission to use this command. This command is intended only for developers and requires special access. If you believe you should have access to this command, please contact the bot owner for further assistance. Thank you for your understanding.',
               )
               .setColor(CustomHex('#2F3136'))
-              .setFooter({ text: '©2022 - 2023 | Reliable' });
+              .setFooter({ text: 'Reliable | Your trusted assistant' });
 
             const topgg = new ActionRowBuilder().addComponents(
               new ButtonBuilder()
@@ -89,13 +89,36 @@ module.exports = {
 
           if (!existingUser) {
             const applyEmbed = new EmbedBuilder()
-              .setTitle('Beta Test Program')
+              .setTitle('__Beta Program__')
               .setDescription(
-                'Please first apply for the beta program by using the `/apply-beta` command.',
+                'To begin the process, we kindly request that you utilize the </apply-beta:1127199163793297408> command to submit your application for the beta program. This formal procedure ensures a comprehensive evaluation of your qualifications and compatibility. Thank you for your interest; we look forward to reviewing your application promptly.',
               )
-              .setColor(CustomRGB(173, 255, 47));
-
-            return interaction.reply({ embeds: [applyEmbed], ephemeral: true });
+              .setColor(`#2F3136`)
+              .setFooter({ text: 'Reliable | Your trusted assistant' });
+            const topgg = new ActionRowBuilder().addComponents(
+              new ButtonBuilder()
+                .setLabel('Vote Reliable')
+                .setEmoji('<:reliable_topgg:1034324522305855561>')
+                .setStyle('Link')
+                .setURL(
+                  'https://top.gg/bot/1030870443005071512?s=05fa7c98112c0',
+                ),
+              new ButtonBuilder()
+                .setLabel('Support Server')
+                .setEmoji('<:reliable_support:1031443305399074836>')
+                .setStyle(ButtonStyle.Link)
+                .setURL('https://dsc.gg/reliable-support'),
+              new ButtonBuilder()
+                .setLabel('Invite Reliable')
+                .setEmoji('<:reliable_invite:1031443216664371231>')
+                .setStyle('Link')
+                .setURL('https://dsc.gg/reliable-bot'),
+            );
+            return interaction.reply({
+              embeds: [applyEmbed],
+              components: [topgg],
+              ephemeral: true,
+            });
           }
         }
 
@@ -103,9 +126,9 @@ module.exports = {
           await command.execute(interaction, client);
         } catch (e) {
           const embed = new EmbedBuilder()
-            .setTitle('Commands - Developer')
+            .setTitle(`__System Halt__`)
             .setDescription(
-              `> Oops, it looks like there was an error while executing that command. Here are some possible reasons why this happened:
+              `Oops, it looks like there was an error while executing that command. Here are some possible reasons why this happened:
   
   **\`•\`** The bot encountered an unexpected issue while trying to process your command.
   **\`•\`** The command was used incorrectly or with invalid input.
