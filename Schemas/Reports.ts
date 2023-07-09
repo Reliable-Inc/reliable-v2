@@ -1,33 +1,33 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
 
 const ReportsSchema = new Schema({
   BugTitle: {
     type: String,
-    required: true
+    required: true,
   },
   BugDescription: {
     type: String,
-    required: true
+    required: true,
   },
   BugExpectation: {
     type: String,
-    required: true
+    required: true,
   },
   ReportedBy: {
     type: String,
-    required: true
+    required: true,
   },
   ReportedPfp: {
     type: String,
-    required: true
+    required: true,
   },
   ReportedDate: {
     type: String,
     required: false,
-    default: formatDate
-  }
+    default: formatDate,
+  },
 });
 
 function formatDate() {
