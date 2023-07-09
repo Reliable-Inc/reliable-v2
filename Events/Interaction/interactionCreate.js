@@ -8,7 +8,7 @@ const {
   ButtonStyle,
   InteractionType,
 } = require('discord.js');
-const { Configuration } = require('../../config');
+const Configuration = require('../../config');
 const chalk = require('chalk');
 const { CustomHex, CustomRGB } = require('discordjs-colors-bundle');
 import BetaTestUsers from '../../Schemas/BetaTest';
@@ -35,7 +35,7 @@ module.exports = {
         }
 
         if (command.developer) {
-          const developerIds = Configuration.developerIds;
+          const developerIds = Configuration.default.developerIds;
           if (!developerIds.includes(interaction.user.id)) {
             console.log(
               chalk.cyan('[ INFORMATION ]') +
@@ -137,7 +137,7 @@ module.exports = {
   __If you continue to experience issues, please reach out to the bot's developers for assistance. Thank you!__`
             )
             .setColor(CustomHex('#2F3136'))
-            .setFooter({ text: '©2022 - 2023 | Reliable' });
+            .setFooter({ text: 'Reliable | Your trusted assistant' })
 
           const topgg = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
