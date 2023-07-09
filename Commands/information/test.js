@@ -8,45 +8,42 @@ const {
   ActionRowBuilder,
   ButtonStyle,
   Embed,
-} = require("discord.js");
-const fetch = require("node-fetch");
+} = require('discord.js');
+const fetch = require('node-fetch');
 
 module.exports = {
   developer: true,
   data: new SlashCommandBuilder()
-    .setName("hostevent")
-    .setDescription("Using this command you can host your own events.")
+    .setName('hostevent')
+    .setDescription('Using this command you can host your own events.')
     .setNSFW(false)
     .addStringOption((op) =>
       op
-        .setName("event")
-        .setDescription("What kind of event you want to host?")
+        .setName('event')
+        .setDescription('What kind of event you want to host?')
         .setRequired(true)
         .addChoices(
-            { name: 'Patrol', value: 'patrol' },
-            { name: 'Trial', value: 'trial' },
-            { name: 'General Training', value: 'general_training' },
-            { name: 'Combat Training', value: 'combat_training' },
-            { name: 'Inspections', value: 'inspections' },
-            { name: 'Tryout', value: 'tryout' },
-			)
+          { name: 'Patrol', value: 'patrol' },
+          { name: 'Trial', value: 'trial' },
+          { name: 'General Training', value: 'general_training' },
+          { name: 'Combat Training', value: 'combat_training' },
+          { name: 'Inspections', value: 'inspections' },
+          { name: 'Tryout', value: 'tryout' }
+        )
     )
     .addStringOption((op) =>
       op
-        .setName("time")
-        .setDescription("When the event will start?")
+        .setName('time')
+        .setDescription('When the event will start?')
         .setRequired(true)
     )
     .addStringOption((op) =>
-      op
-        .setName("link")
-        .setDescription("Link to the event.")
-        .setRequired(true)
+      op.setName('link').setDescription('Link to the event.').setRequired(true)
     )
     .addStringOption((op) =>
       op
-        .setName("note")
-        .setDescription("Any important thing?")
+        .setName('note')
+        .setDescription('Any important thing?')
         .setRequired(false)
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages),
@@ -58,36 +55,36 @@ module.exports = {
    */
 
   async execute(interaction, client) {
-    const event = interaction.options.getString("event");
-    const time = interaction.options.getString("time");
-    const link = interaction.options.getString("link");
-    const note = interaction.options.getString("note") || "None";
+    const event = interaction.options.getString('event');
+    const time = interaction.options.getString('time');
+    const link = interaction.options.getString('link');
+    const note = interaction.options.getString('note') || 'None';
 
     const event2 = new EmbedBuilder()
-      .setTitle("Currency")
+      .setTitle('Currency')
       .addFields({
-        name: "__Exchange Information__",
+        name: '__Exchange Information__',
         value: `**\`•\` Converted**: **\`${converted}\`**`,
       })
-      .setColor("#2F3136")
-      .setFooter({ text: "©2022 - 2023 | Reliable" })
+      .setColor('#2F3136')
+      .setFooter({ text: '©2022 - 2023 | Reliable' })
       .setTimestamp();
 
     const components = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId("YES")
+        .setCustomId('YES')
         .setLabel(`From: ${from}`)
-        .setStyle("Secondary")
+        .setStyle('Secondary')
         .setDisabled(true),
       new ButtonBuilder()
-        .setCustomId("NO")
+        .setCustomId('NO')
         .setLabel(`To: ${touwu}`)
-        .setStyle("Secondary")
+        .setStyle('Secondary')
         .setDisabled(true),
       new ButtonBuilder()
-        .setCustomId("NOw")
+        .setCustomId('NOw')
         .setLabel(`Amount: ${amount}`)
-        .setStyle("Secondary")
+        .setStyle('Secondary')
         .setDisabled(true)
     );
     await interaction.editReply({
