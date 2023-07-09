@@ -55,7 +55,7 @@ module.exports = {
       .setTitle('Ping - Checked')
       .setDescription(`*❝${pingmsgs}🙷*`)
       .setColor('#2F3136')
-      .setFooter({ text: "Reliable | Your trusted assistant" })
+      .setFooter({ text: 'Reliable | Your trusted assistant' })
       .setTimestamp();
 
     const components = new ActionRowBuilder().addComponents(
