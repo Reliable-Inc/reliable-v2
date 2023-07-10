@@ -8,7 +8,7 @@ const { colors } = require('discordjs-colors-bundle');
 module.exports = {
   developer: true,
   data: new ContextMenuCommandBuilder()
-    .setName('getAvatar')
+    .setName('get avatar')
     .setType(ApplicationCommandType.User),
 
   async execute(interaction, client) {

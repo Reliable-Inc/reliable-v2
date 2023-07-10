@@ -215,7 +215,7 @@ async function loadModule(path: string) {
   const resolvedPath = require.resolve(path);
   const code = fs.readFileSync(resolvedPath, 'utf8');
   const lines = code.split('\n');
-  const isStrictEnabled = lines.some((line) => line.includes('strict'));
+  const isStrictEnabled = lines.some(line => line.includes('strict'));
 
   if (!isStrictEnabled) {
     throw new StrictError(

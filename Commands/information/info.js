@@ -25,30 +25,30 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('info')
     .setDescription('info command')
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('anime')
         .setDescription('💮 Search for information about Anime by given name')
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option.setName('query').setDescription('Anime name').setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('channel')
         .setDescription('View ℹ️ info about a 📺 channel.')
-        .addChannelOption((option) =>
+        .addChannelOption(option =>
           option
             .setName('channel')
             .setDescription('Mention the channel')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('movie')
         .setDescription('View ℹ️ info about a 🎥 movie.')
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('name')
             .setDescription('Name of the movie')
@@ -56,169 +56,169 @@ module.exports = {
         )
     )
 
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('covid-countries')
         .setDescription("Track 🌍 a country's COVID-19 cases 📊")
-        .addStringOption((op) =>
+        .addStringOption(op =>
           op
             .setName('country')
             .setDescription('Provide a country')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('country')
         .setDescription('Get ℹ️ information about a 🌍 country.')
-        .addStringOption((op) =>
+        .addStringOption(op =>
           op.setName('name').setDescription('Country name').setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('covid-world-wide')
         .setDescription('Track worldwide COVID-19 cases')
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('member-count')
         .setDescription('see the total members of your server')
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('npm')
         .setDescription('Check for packages on npm')
-        .addStringOption((op) =>
+        .addStringOption(op =>
           op
             .setName('name')
             .setDescription('Provide a name to request content from.')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('pokemon')
         .setDescription('Returns pokemon information')
-        .addStringOption((op) =>
+        .addStringOption(op =>
           op
             .setName('name')
             .setDescription('Provide a name to request content from.')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('reddit')
         .setDescription('Request random content from Reddit via subreddits.')
-        .addStringOption((op) =>
+        .addStringOption(op =>
           op
             .setName('subreddit')
             .setDescription('Provide a subreddit to request content from.')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('role')
         .setDescription('View info about a role')
-        .addRoleOption((option) =>
+        .addRoleOption(option =>
           option
             .setName('role')
             .setDescription('The role to view info of')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('translate')
         .setDescription('Translate any word/sentence to EN')
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('query')
             .setDescription('The text to translate')
             .setRequired(true)
         )
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('from')
             .setDescription('Source Language.')
             .setRequired(true)
         )
-        .addStringOption((option) =>
+        .addStringOption(option =>
           option
             .setName('to')
             .setDescription('Destination Language.')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('role-perm')
         .setDescription('Shows a role permissions')
-        .addRoleOption((op) =>
+        .addRoleOption(op =>
           op
             .setName('target')
             .setDescription('Select the target')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('weather')
         .setDescription('get weather information')
-        .addStringOption((op) =>
+        .addStringOption(op =>
           op
             .setName('place')
             .setDescription('country/city name to get weather information for')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub.setName('apod').setDescription('Astronomy Picture of the Day')
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub.setName('quotes').setDescription('Sends random quotes')
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('server')
         .setDescription('Displays information about the server.')
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('user')
         .setDescription('get user info')
-        .addUserOption((op) =>
+        .addUserOption(op =>
           op
             .setName('target')
             .setDescription('Select the target')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('user-perm')
         .setDescription("Shows a user's permissions")
-        .addUserOption((op) =>
+        .addUserOption(op =>
           op
             .setName('target')
             .setDescription('Select the target')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('twitter')
         .setDescription('Shows a twitter account information')
-        .addStringOption((op) =>
+        .addStringOption(op =>
           op
             .setName('account')
             .setDescription('Mention the account name')
             .setRequired(true)
         )
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub.setName('space').setDescription('Shows latest space informations.')
     ),
 
@@ -226,7 +226,7 @@ module.exports = {
     if (interaction.options.getSubcommand() == 'anime') {
       const search = interaction.options.getString('query');
       await interaction.deferReply();
-      mal.getInfoFromName(search).then((data) => {
+      mal.getInfoFromName(search).then(data => {
         if (data.rating == 'Rx - Hentai' && !interaction.channel.nsfw) {
           const embed2 = new EmbedBuilder()
             .setTitle('🔞 | NSFW content')
@@ -308,7 +308,7 @@ module.exports = {
                 value: `\`\`\`${
                   data.characters
                     ? data.characters
-                        .map((x) => `${x.name}: ${x.role}`)
+                        .map(x => `${x.name}: ${x.role}`)
                         .join('\n')
                     : 'N/A'
                 }\`\`\``,
@@ -318,7 +318,7 @@ module.exports = {
                 name: '__Staff & Role:__',
                 value: `\`\`\`${
                   data.staff
-                    ? data.staff.map((x) => `${x.name}: ${x.role}`).join('\n')
+                    ? data.staff.map(x => `${x.name}: ${x.role}`).join('\n')
                     : 'N/A'
                 }\`\`\``,
                 inline: true,
@@ -442,8 +442,8 @@ module.exports = {
       let countries = interaction.options.getString('country') || '';
       axios
         .get(`https://disease.sh/v2/countries/${countries}`)
-        .then((response) => response.data)
-        .then((data) => {
+        .then(response => response.data)
+        .then(data => {
           const embed = new EmbedBuilder()
             .setTitle(`Coronavirus | Countries Stats`)
             .setDescription(
@@ -487,7 +487,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             );
           interaction.reply({ embeds: [embed] });
         })
-        .catch((e) => {
+        .catch(e => {
           console.log(e);
           const err_embed = new EmbedBuilder()
             .setTitle('Error')
@@ -503,8 +503,8 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
     } else if (interaction.options.getSubcommand() === 'covid-world-wide') {
       axios
         .get(`https://covid19.mathdro.id/api`)
-        .then((response) => response.data)
-        .then((data) => {
+        .then(response => response.data)
+        .then(data => {
           let confirmed = data.confirmed.value.toLocaleString();
           let recovered = data.recovered.value.toLocaleString();
           let deaths = data.deaths.value.toLocaleString();
@@ -545,22 +545,22 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
     } else if (interaction.options.getSubcommand() === 'member-count') {
       const members = interaction.guild.members.cache;
       const dndusers = members.filter(
-        (member) => !member.user.bot && member.presence?.status === 'dnd'
+        member => !member.user.bot && member.presence?.status === 'dnd'
       ).size;
       const onlineusers2 = members.filter(
-        (member) => !member.user.bot && member.presence?.status === 'online'
+        member => !member.user.bot && member.presence?.status === 'online'
       ).size;
       const onlineusers3 = members.filter(
-        (member) => !member.user.bot && member.presence?.status === 'idle'
+        member => !member.user.bot && member.presence?.status === 'idle'
       ).size;
       const dndbots = members.filter(
-        (member) => member.user.bot && member.presence?.status === 'dnd'
+        member => member.user.bot && member.presence?.status === 'dnd'
       ).size;
       const onlinebots2 = members.filter(
-        (member) => member.user.bot && member.presence?.status === 'online'
+        member => member.user.bot && member.presence?.status === 'online'
       ).size;
       const onlinebots3 = members.filter(
-        (member) => member.user.bot && member.presence?.status === 'idle'
+        member => member.user.bot && member.presence?.status === 'idle'
       ).size;
       const usersonlineAll = dndusers + onlineusers2 + onlineusers3;
       const botssonlineAll = dndbots + onlinebots2 + onlinebots3;
@@ -574,14 +574,14 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           {
             name: `:couple: Total Members (${interaction.guild.memberCount})`,
             value: `**\`•\` Members: \`${
-              members.filter((member) => !member.user.bot).size
+              members.filter(member => !member.user.bot).size
             }\`**
-**\`•\` Bots: \`${members.filter((member) => member.user.bot).size}\`**`,
+**\`•\` Bots: \`${members.filter(member => member.user.bot).size}\`**`,
             inline: false,
           },
           {
             name: `<:reliable_verifedbot:1030802332298006598> Total Online Members (\`${usersonlineAll}\` / \`${
-              members.filter((member) => !member.user.bot).size
+              members.filter(member => !member.user.bot).size
             }\`)`,
             value: `**<:reliable_dnd:1044914867779412078> Users with DND: \`${dndusers}\`**
 **<:reliable_online:1040907077763207259> Users with Online: \`${onlineusers2}\`**
@@ -590,7 +590,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           },
           {
             name: `<:reliable_maintainance:1040906925233143878> Total Online Bots (\`${botssonlineAll}\` / \`${
-              members.filter((member) => member.user.bot).size
+              members.filter(member => member.user.bot).size
             }\`)`,
             value: `**<:reliable_dnd:1044914867779412078> Bots with DND: \`${dndbots}\`**
 **<:reliable_online:1040907077763207259> Bots with Online: \`${onlinebots2}\`**
@@ -604,8 +604,8 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
       const target = interaction.options.getString('name') || '';
       axios
         .get(`https://registry.npmjs.com/${target}`)
-        .then((res) => res.data)
-        .then((json) => {
+        .then(res => res.data)
+        .then(json => {
           const embed = new EmbedBuilder()
             .setColor(CustomHex('#2F3136'))
             .setTitle('__Searched__')
@@ -619,7 +619,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             .addFields({
               name: '__Information__',
               value: `**\`»\` Maintainers**: \`${json.maintainers
-                .map((user) => user.name)
+                .map(user => user.name)
                 .join(', ')}\`
 **\`»\` Engines**: \`${
                 json.engines?.node ?? "Doesn't have any specific engine."
@@ -669,8 +669,8 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
 
       axios
         .get(`https://some-random-api.ml/pokemon/pokedex?pokemon=${poke2}`)
-        .then((res) => res.data)
-        .then((json) => {
+        .then(res => res.data)
+        .then(json => {
           const embed = new EmbedBuilder()
             .setTitle(`${json.name}`)
             .setThumbnail(`http://i.some-random-api.ml/pokemon/${poke2}.gif`)
@@ -777,7 +777,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           embeds: [embed],
           fetchReply: true,
         });
-        reactions.forEach((reaction) => reply.react(reaction).catch(() => {}));
+        reactions.forEach(reaction => reply.react(reaction).catch(() => {}));
       } catch (error) {
         embed
           .setTitle('🔍 Unable to reach API')
@@ -814,7 +814,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
       const role = interaction.options.getRole('target');
       const rolePermissions = role.permissions
         .toArray()
-        .map((p) => `\`${p}\``)
+        .map(p => `\`${p}\``)
         .join(', ');
       const embed = new EmbedBuilder()
         .setTitle(`Role Permissions`)
@@ -839,12 +839,12 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
       const { members, channels, emojis, roles, stickers } = guild;
 
       const sortedRoles = roles.cache
-        .map((role) => role)
+        .map(role => role)
         .slice(1, roles.cache.size)
         .sort((a, b) => b.position - a.position);
-      const userRoles = sortedRoles.filter((role) => !role.managed);
-      const managedRoles = sortedRoles.filter((role) => role.managed);
-      const botCount = members.cache.filter((member) => member.user.bot).size;
+      const userRoles = sortedRoles.filter(role => !role.managed);
+      const managedRoles = sortedRoles.filter(role => role.managed);
+      const botCount = members.cache.filter(member => member.user.bot).size;
 
       const maxDisplayRoles = (roles, maxFieldLength = 1024) => {
         let totalLength = 0;
@@ -874,8 +874,8 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
         return separator ? splitPascal(pascal, separator) : pascal;
       };
 
-      const getChannelTypeSize = (type) =>
-        channels.cache.filter((channel) => type.includes(channel.type)).size;
+      const getChannelTypeSize = type =>
+        channels.cache.filter(channel => type.includes(channel.type)).size;
 
       const totalChannels = getChannelTypeSize([
         ChannelType.GuildText,
@@ -923,7 +923,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
                 value:
                   guild.features
                     ?.map(
-                      (feature) =>
+                      feature =>
                         `<:reliable_right:1042843202429919272> ${toPascalCase(
                           feature,
                           ' '
@@ -1008,10 +1008,10 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
                 }\`**)`,
                 value: [
                   `**\`•\`** **Animated** **\`${
-                    emojis.cache.filter((emoji) => emoji.animated).size
+                    emojis.cache.filter(emoji => emoji.animated).size
                   }\`**`,
                   `**\`•\`** **Static** **\`${
-                    emojis.cache.filter((emoji) => !emoji.animated).size
+                    emojis.cache.filter(emoji => !emoji.animated).size
                   }\`**`,
                   `**\`•\`** **Stickers** **\`${stickers.cache.size}\`**`,
                 ].join('\n'),
@@ -1028,11 +1028,11 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
                   }\`**`,
                   `**\`•\`** **Boosters** **\`${
                     guild.members.cache.filter(
-                      (member) => member.roles.premiumSubscriberRole
+                      member => member.roles.premiumSubscriberRole
                     ).size || '**None**'
                   }\`**`,
                   `**\`•\`** **Total Boosters** **\`${
-                    guild.members.cache.filter((member) => member.premiumSince)
+                    guild.members.cache.filter(member => member.premiumSince)
                       .size
                   }\`**`,
                 ].join('\n'),
@@ -1149,7 +1149,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
       const data = await response.json();
 
       const sortedRoles = roles.cache
-        .map((role) => role)
+        .map(role => role)
         .sort((a, b) => b.position - a.position)
         .slice(0, roles.cache.size - 1);
 
@@ -1160,13 +1160,13 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
       const userFlags = user.flags.toArray();
 
       const badges = data.data.public_flags_array
-        ? data.data.public_flags_array.map((flag) => flags[flag]).join(' ')
+        ? data.data.public_flags_array.map(flag => flags[flag]).join(' ')
         : 'No Badges.';
       const badges2 = userFlags.length
-        ? formatter.format(userFlags.map((flag) => `**${flags[flag]}**`))
+        ? formatter.format(userFlags.map(flag => `**${flags[flag]}**`))
         : '**`None`**';
 
-      const deviceFilter = clientType.filter((device) =>
+      const deviceFilter = clientType.filter(device =>
         clientStatus.includes(device.name)
       );
       const devices = !Array.isArray(deviceFilter)
@@ -1192,7 +1192,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             value:
               presence?.activities
                 .map(
-                  (activity) =>
+                  activity =>
                     `\` ${activityType[activity.type]} ${activity.name} \` `
                 )
                 .join('\n') || '**`None`**',
@@ -1228,7 +1228,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           {
             name: `\`🎀\` | Devices`,
             value: devices
-              .map((device) => `**\`${device.emoji} ${device.text}\`**`)
+              .map(device => `**\`${device.emoji} ${device.text}\`**`)
               .join('\n'),
             inline: true,
           },
@@ -1270,7 +1270,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
         interaction.options.getMember('target') || interaction.member;
       const memberPermissions = member.permissions
         .toArray()
-        .map((p) => `\`${p}\``)
+        .map(p => `\`${p}\``)
         .join(', ');
 
       const embed = new EmbedBuilder()
@@ -1293,8 +1293,8 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
       interaction.reply({ embeds: [embed], ephemeral: true });
     } else if (interaction.options.getSubcommand() === 'space') {
       fetch('http://api.open-notify.org/iss-now.json')
-        .then((res) => res.json())
-        .then((out) => {
+        .then(res => res.json())
+        .then(out => {
           var iss_info = out;
           var position = iss_info['iss_position'];
           var latitude = position['latitude'];
@@ -1321,8 +1321,8 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
       fetch(
         'https://api.nasa.gov/planetary/apod?api_key=l2eGLkw7K710Z3JKP9abb0v0VGfRC03rJgo3frvo'
       )
-        .then((res) => res.json())
-        .then((json) => {
+        .then(res => res.json())
+        .then(json => {
           const Embed = new EmbedBuilder()
             .setTitle(`${json.title}`)
             .setColor('#2F3136')
@@ -1345,8 +1345,8 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
         });
     } else if (interaction.options.getSubcommand() === 'quotes') {
       fetch('https://api.popcat.xyz/quote')
-        .then((res) => res.json())
-        .then((json) => {
+        .then(res => res.json())
+        .then(json => {
           const Embed = new EmbedBuilder()
             .setTitle(`Quotes`)
             .setColor('#2F3136')
@@ -1510,8 +1510,8 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
         fetch(
           `https://seasonapi.iamsohom829.repl.co/api/get-current-season/?api_key=da768dcebb706dd028da555a79308766ece0ef364641115ed6f1be9b96cf406c&country=${country}`
         )
-          .then((res) => res.json())
-          .then((json) => {
+          .then(res => res.json())
+          .then(json => {
             const Embed = new EmbedBuilder()
               .setTitle(`Season`)
               .setDescription(`> **${json.season}**\n > **${json.year}**`)
@@ -1543,8 +1543,8 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           .get(
             `https://luminabot.xyz/api/json/weather?location=${place}&degreetype=C`
           )
-          .then((res) => res.data)
-          .then((json) => {
+          .then(res => res.data)
+          .then(json => {
             const Embed = new EmbedBuilder()
               .setTitle(`Weather Information`)
               .setThumbnail(`https:${json.current.condition?.icon}`)
@@ -1631,8 +1631,8 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
         const country = interaction.options.getString('name');
 
         fetch(`https://restcountries.com/v3.1/name/${country}`)
-          .then((res) => res.json())
-          .then((json) => {
+          .then(res => res.json())
+          .then(json => {
             const data = json[0];
 
             let independent = 'No';

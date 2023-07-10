@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "tsc && node ./bot/index.js",
-    "check": "node checker.js"
+    "check": "node checker.js",
+    "format": "prettier -w"
   },
   "dependencies": {
     "@discordjs/builders": "^1.6.3",
@@ -38,6 +39,7 @@
     "musixmatch-node": "^1.0.2",
     "node-fetch": "^2.6.1",
     "perspective-api-client": "^3.1.0",
+    "prettier": "^3.0.0",
     "puppeteer": "^20.8.0",
     "superagent": "^8.0.9",
     "syc-logger": "^0.1.4",

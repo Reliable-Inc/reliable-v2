@@ -16,7 +16,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('say')
     .setDescription("Replies with what you've said.")
-    .addStringOption((op) =>
+    .addStringOption(op =>
       op
         .setName('message')
         .setDescription('The message to say.')
@@ -43,7 +43,7 @@ module.exports = {
     const badWords = Object.values(words.words).concat(list.array);
     if (
       badWords.some(
-        (word) =>
+        word =>
           toSay.toLowerCase().includes(word) && !excludedWords.includes(word)
       )
     ) {

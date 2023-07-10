@@ -24,7 +24,7 @@ module.exports = {
       .setColor(CustomRGB(79, 97, 102))
       .setFooter({ text: 'Reliable | Your trusted assistant' })
       .setDescription(
-        `We kindly request to be considered for participation in the beta program. We are eager to contribute our insights, feedback, and expertise to assist in refining and enhancing the product. By actively engaging in the beta program, we aim to collaborate closely with the development team to ensure the delivery of a high-quality and user-centric final release.`,
+        `We kindly request to be considered for participation in the beta program. We are eager to contribute our insights, feedback, and expertise to assist in refining and enhancing the product. By actively engaging in the beta program, we aim to collaborate closely with the development team to ensure the delivery of a high-quality and user-centric final release.`
       )
       .addFields({
         name: '__Reason__',
@@ -37,10 +37,10 @@ module.exports = {
           `Username: ${
             interaction.fields.getTextInputValue('userName') ||
             interaction.user.username
-          } `,
+          } `
         )
         .setStyle('Danger')
-        .setDisabled(true),
+        .setDisabled(true)
     );
 
     await channel.send({ embeds: [Embed], components: [bcomponents] });

@@ -137,7 +137,7 @@ module.exports = {
   __If you continue to experience issues, please reach out to the bot's developers for assistance. Thank you!__`
             )
             .setColor(CustomHex('#2F3136'))
-            .setFooter({ text: 'Reliable | Your trusted assistant' })
+            .setFooter({ text: 'Reliable | Your trusted assistant' });
 
           const topgg = new ActionRowBuilder().addComponents(
             new ButtonBuilder()

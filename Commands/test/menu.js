@@ -4,12 +4,12 @@ const {
   PermissionFlagsBits,
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
-} = require("discord.js");
+} = require('discord.js');
 module.exports = {
   developer: true,
   data: new SlashCommandBuilder()
-    .setName("menu")
-    .setDescription("Returns menu")
+    .setName('menu')
+    .setDescription('Returns menu')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   /**
@@ -19,14 +19,14 @@ module.exports = {
    */
   async execute(interaction, client) {
     const menu = new StringSelectMenuBuilder()
-      .setCustomId("tst-mnu")
+      .setCustomId('tst-mnu')
       .setMinValues(1)
       .setMaxValues(1)
       .addOptions(
-        new StringSelectMenuOptionBuilder({ label: "Idk", value: "idk" }),
+        new StringSelectMenuOptionBuilder({ label: 'Idk', value: 'idk' }),
         new StringSelectMenuOptionBuilder({
-          label: "UIDUI",
-          value: "yugiuDigf",
+          label: 'UIDUI',
+          value: 'yugiuDigf',
         })
       );
     const row = new ActionRowBuilder().addComponents(menu);

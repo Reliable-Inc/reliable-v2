@@ -495,7 +495,7 @@ const commandFolder = fs.readdirSync('./Commands');
 for (const folder of commandFolder) {
   const commandFiles = fs
     .readdirSync(`./Commands/${folder}`)
-    .filter((file) => file.endsWith('.js'));
+    .filter(file => file.endsWith('.js'));
 
   for (const file of commandFiles) {
     const command = require(`./Commands/${folder}/${file}`);
@@ -510,7 +510,7 @@ const eventFolder = fs.readdirSync('./Events');
 for (const folder of eventFolder) {
   const eventFiles = fs
     .readdirSync(`./Events/${folder}`)
-    .filter((file) => file.endsWith('.js'));
+    .filter(file => file.endsWith('.js'));
 
   for (const file of eventFiles) {
     const event = require(`./Events/${folder}/${file}`);
@@ -529,7 +529,7 @@ const componentsFolder = fs.readdirSync('./Components');
 for (const folder of componentsFolder) {
   const componentsFile = fs
     .readdirSync(`./Components/${folder}`)
-    .filter((file) => file.endsWith('.js'));
+    .filter(file => file.endsWith('.js'));
 
   switch (folder) {
     case 'buttons':

@@ -1,9 +1,9 @@
 module.exports = {
   data: {
-    name: "tst-btn",
+    name: 'tst-btn',
   },
 
   async execute(interaction) {
-    await interaction.reply({ content: "Hello!", ephemeral: true });
+    await interaction.reply({ content: 'Hello!', ephemeral: true });
   },
 };

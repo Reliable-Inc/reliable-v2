@@ -1,6 +1,6 @@
 module.exports = {
   data: {
-    name: "tst-mnu",
+    name: 'tst-mnu',
   },
   async execute(interaction, client) {
     await interaction.reply({

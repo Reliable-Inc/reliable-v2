@@ -23,8 +23,8 @@ async function wrapAPI(apiUrl) {
   // Extract the API response
   const apiResponse = await page.evaluate(() => {
     return fetch(location.href)
-      .then((response) => response.json())
-      .catch((error) => {
+      .then(response => response.json())
+      .catch(error => {
         console.error('Error fetching API:', error);
         return null;
       });
@@ -38,8 +38,8 @@ async function wrapAPI(apiUrl) {
 const fs = require('fs');
 const fetch = require('node-fetch');
 
-const clientId = process.env["Spotify_Client_Id"];
-const clientSecret = process.env["Spotify_Client_Secret"];
+const clientId = process.env['Spotify_Client_Id'];
+const clientSecret = process.env['Spotify_Client_Secret'];
 
 async function getAccessToken() {
   const response = await fetch('https://accounts.spotify.com/api/token', {
@@ -58,19 +58,19 @@ async function getAccessToken() {
 }
 
 function writeAccessTokenToFile(accessToken) {
-  fs.writeFile('tokens.txt', accessToken, (err) => {
+  fs.writeFile('tokens.txt', accessToken, err => {
     if (err) throw err;
   });
 }
 
 getAccessToken()
-  .then((accessToken) => writeAccessTokenToFile(accessToken))
-  .catch((err) => console.error('Error retrieving access token:', err));
+  .then(accessToken => writeAccessTokenToFile(accessToken))
+  .catch(err => console.error('Error retrieving access token:', err));
 
 setInterval(() => {
   getAccessToken()
-    .then((accessToken) => writeAccessTokenToFile(accessToken))
-    .catch((err) => console.error('Error retrieving access token:', err));
+    .then(accessToken => writeAccessTokenToFile(accessToken))
+    .catch(err => console.error('Error retrieving access token:', err));
 }, 3600000);
 
 async function getTrackInfo(artistName, trackName) {
@@ -95,19 +95,20 @@ async function getTrackInfo(artistName, trackName) {
     const track = data.tracks.items[0];
     const trackInfo = {
       name: track.name,
-      artists: track.artists.map((artist) => artist.name),
+      artists: track.artists.map(artist => artist.name),
       album: track.album.name,
       previewUrl: track.preview_url,
       externalUrl: track.external_urls.spotify,
       albumIcon: track.album.images[0].url,
-      durationMs: track.duration_ms
+      durationMs: track.duration_ms,
+      trackId: track.id,
+      isrc: track.external_ids.isrc,
     };
     return trackInfo;
   } else {
     throw new Error('Track not found');
   }
 }
-
 
 module.exports = {
   beta: true,
@@ -116,10 +117,10 @@ module.exports = {
     .setDescription(
       'Initiate the 🎵 Spotify information command to access comprehensive details.'
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub.setName('current').setDescription('Get your current playing status.')
     )
-    .addSubcommand((sub) =>
+    .addSubcommand(sub =>
       sub
         .setName('info')
         .setDescription('Get your current playing information.')
@@ -136,7 +137,7 @@ module.exports = {
         await interaction.deferReply({ ephemeral: true });
         const member = interaction.member;
         const activity = member.presence.activities.find(
-          (activity) => activity.type === 2 && activity.name === 'Spotify'
+          activity => activity.type === 2 && activity.name === 'Spotify'
         );
 
         if (activity) {
@@ -174,22 +175,33 @@ module.exports = {
             trackName: trackName,
           });
           const id = trackInfo?.track_id;
-          const hasLyrics = (await mxm.hasLyrics({ artistName: artistName, trackName: trackName })) ? 'Yes' : 'No';
+          const hasLyrics = (await mxm.hasLyrics({
+            artistName: artistName,
+            trackName: trackName,
+          }))
+            ? 'Yes'
+            : 'No';
           const deepSearch = await mxm.trackSearch({
             artistName: artistName,
             trackName: trackName,
             id: id,
+            isrc: info?.isrc,
           });
           const albumName = info.album;
-          
-          const isInstrumental = (await mxm.isInstrumental({ artistName: artistName, trackName: trackName }))
+
+          const isInstrumental = (await mxm.isInstrumental({
+            artistName: artistName,
+            trackName: trackName,
+          }))
             ? 'Yes'
             : 'No';
-          const isExplicit = (await mxm.isExplicit({ artistName: artistName, trackName: trackName }))
+          const isExplicit = (await mxm.isExplicit({
+            artistName: artistName,
+            trackName: trackName,
+          }))
             ? 'Yes'
             : 'No';
           const trackRating = deepSearch?.track_rating;
-
 
           const Embed = new EmbedBuilder()
             .setTitle(`__Your spotify status__`)
@@ -198,10 +210,15 @@ module.exports = {
             .setDescription(
               `Presenting an extensive and thorough overview of the complete information pertaining to your current Spotify listening session, including track name, artist name, album details, availability of lyrics, instrumental status, and explicit content classification. Please find the comprehensive report below, offering detailed insights into your present Spotify experience.`
             )
-.addFields({
-  name: '__Track Information__',
-  value: `**\`‣\` Artist Name**: \`${aName || 'N/A'}\`\n**\`‣\` Album Name**: \`${albumName ?? 'N/A'}\`\n**\`‣\` Explicit**: \`${isExplicit ?? "Yes"}\``,
-}).setImage(albumIcon);
+            .addFields({
+              name: '__Track Information__',
+              value: `**\`‣\` Artist Name**: \`${
+                aName || 'N/A'
+              }\`\n**\`‣\` Album Name**: \`${
+                albumName ?? 'N/A'
+              }\`\n**\`‣\` Explicit**: \`${isExplicit ?? 'Yes'}\``,
+            })
+            .setImage(albumIcon);
 
           const bcomponents = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
@@ -256,7 +273,7 @@ Regrettably, it appears that you are not presently engaged in any Spotify audio 
       await interaction.deferReply({ ephemeral: true });
       const member = interaction.member;
       const activity = member.presence.activities.find(
-        (activity) => activity.type === 2 && activity.name === 'Spotify'
+        activity => activity.type === 2 && activity.name === 'Spotify'
       );
 
       if (activity) {
@@ -306,41 +323,63 @@ Regrettably, it appears that you are not presently engaged in any Spotify audio 
 
         const info = await getTrackInfo(artistName, trackName);
 
-                  const albumIcon = info?.albumIcon;
-          const durationMs = info?.durationMs;
-const minutes = Math.floor(durationMs / 60000); 
-const seconds = Math.floor((durationMs % 60000) / 1000); 
+        const albumIcon = info?.albumIcon;
+        const durationMs = info?.durationMs;
+        const minutes = Math.floor(durationMs / 60000);
+        const seconds = Math.floor((durationMs % 60000) / 1000);
 
-const formattedDuration = `${minutes}:${seconds.toString().padStart(2, '0')}`; 
-
+        const formattedDuration = `${minutes}:${seconds
+          .toString()
+          .padStart(2, '0')}`;
 
         const trackInfo = await mxm.trackSearch({
           artistName: artistName,
           trackName: trackName,
         });
         const id = trackInfo?.track_id;
-        const hasLyrics = (await mxm.hasLyrics({ artistName: artistName, trackName: trackName })) ? 'Yes' : 'No';
+        const hasLyrics = (await mxm.hasLyrics({
+          artistName: artistName,
+          trackName: trackName,
+        }))
+          ? 'Yes'
+          : 'No';
         const deepSearch = await mxm.trackSearch({
           artistName: artistName,
           trackName: trackName,
           id: id,
+          isrc: info?.isrc,
         });
-        const albumName = deepSearch?.album_name;
-        const isInstrumental = (await mxm.isInstrumental({ artistName: artistName, trackName: trackName })
+        const albumName = info?.album;
+        const isInstrumental = (await mxm.isInstrumental({
+          artistName: artistName,
+          trackName: trackName,
+        }))
           ? 'Yes'
-          : 'No');
-        const isExplicit = (await mxm.isExplicit({ artistName: artistName, trackName: trackName })) ? 'Yes' : 'No';
+          : 'No';
+        const isExplicit = (await mxm.isExplicit({
+          artistName: artistName,
+          trackName: trackName,
+        }))
+          ? 'Yes'
+          : 'No';
         const trackRating = deepSearch?.track_rating;
 
         const Embed = new EmbedBuilder()
           .setTitle(`__Your spotify status__`)
           .setColor(`#2F3136`)
           .setFooter({ text: 'Reliable | Your trusted assistant' })
-         // .setDescription(`## Lyrics:\n${lyrics}`) Hup beta! Eida add disos kan  -_- lyrics 30% dey Musixmatch.
-.addFields({
-  name: '__Track Information__',
-  value: `**\`‣\` Artist Name**: \`${aName || 'N/A'}\`\n**\`‣\` Album Name**: \`${albumName ?? 'N/A'}\`\n**\`‣\` Explicit**: \`${isExplicit ?? "Yes"}\`\n**\`‣\` Duration**: \`${formattedDuration ?? '0:00'}\``,
-}).setThumbnail(albumIcon);
+          // .setDescription(`## Lyrics:\n${lyrics}`) Hup beta! Eida add disos kan  -_- lyrics 30% dey Musixmatch.
+          .addFields({
+            name: '__Track Information__',
+            value: `**\`‣\` Artist Name**: \`${
+              aName || 'N/A'
+            }\`\n**\`‣\` Album Name**: \`${
+              albumName ?? 'N/A'
+            }\`\n**\`‣\` Explicit**: \`${
+              isExplicit ?? 'Yes'
+            }\`\n**\`‣\` Duration**: \`${formattedDuration ?? '0:00'}\``,
+          })
+          .setThumbnail(albumIcon);
 
         const bcomponents = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
@@ -360,7 +399,7 @@ const formattedDuration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             .setDisabled(true),
           new ButtonBuilder()
             .setCustomId('kuttachuda1')
-            .setLabel(`Track Rating: ${trackRating ?? '0'}`)
+            .setLabel(`Track Rating Musixmatch: ${trackRating ?? '0'}`)
             .setStyle('Secondary')
             .setDisabled(true)
         );

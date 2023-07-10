@@ -132,7 +132,7 @@ module.exports = {
           chalk.white(': ') +
           chalk.greenBright(`Refresing`)
       );
- //mamay dekhi akhane akam kortese ;-;
+      //mamay dekhi akhane akam kortese ;-;
       await rest.put(Routes.applicationCommands(clientId), {
         body: commands,
       });

@@ -4,12 +4,12 @@ const {
   ButtonBuilder,
   PermissionFlagsBits,
   ButtonStyle,
-} = require("discord.js");
+} = require('discord.js');
 module.exports = {
   developer: true,
   data: new SlashCommandBuilder()
-    .setName("button")
-    .setDescription("Returns button")
+    .setName('button')
+    .setDescription('Returns button')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   /**
@@ -19,9 +19,9 @@ module.exports = {
    */
   async execute(interaction, client) {
     const button = new ButtonBuilder()
-      .setCustomId("tst-btn")
+      .setCustomId('tst-btn')
       .setStyle(ButtonStyle.Success)
-      .setLabel("button");
+      .setLabel('button');
 
     const row = new ActionRowBuilder().addComponents(button);
 

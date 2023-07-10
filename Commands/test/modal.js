@@ -5,12 +5,12 @@ const {
   TextInputStyle,
   PermissionFlagsBits,
   ModalBuilder,
-} = require("discord.js");
+} = require('discord.js');
 module.exports = {
   developer: true,
   data: new SlashCommandBuilder()
-    .setName("modal")
-    .setDescription("Returns modal")
+    .setName('modal')
+    .setDescription('Returns modal')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   /**
@@ -20,11 +20,11 @@ module.exports = {
    */
   async execute(interaction, client) {
     const modal = new ModalBuilder()
-      .setCustomId("myModal")
-      .setTitle("My Modal");
+      .setCustomId('myModal')
+      .setTitle('My Modal');
 
     const favoriteColorInput = new TextInputBuilder()
-      .setCustomId("favclr")
+      .setCustomId('favclr')
       .setLabel("What's your favorite color?")
       .setStyle(TextInputStyle.Short);
 
