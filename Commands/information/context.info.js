@@ -2,6 +2,9 @@ const {
   ContextMenuCommandBuilder,
   ApplicationCommandType,
   EmbedBuilder,
+  ButtonBuilder,
+  ActionRowBuilder,
+  ButtonStyle
 } = require('discord.js');
 const { colors } = require('discordjs-colors-bundle');
 
@@ -14,7 +17,7 @@ module.exports = {
   async execute(interaction, client) {
     await interaction.deferReply({ ephemeral: true });
     const target =
-      interaction.guild.members.cache.get(interaction.targetId) ??
+      interaction.guild.members.cache.get(interaction.targetUser) ??
       interaction.member;
 
     const { user, presence, roles } = target;
@@ -22,8 +25,6 @@ module.exports = {
       style: 'narrow',
       type: 'conjunction',
     });
-
-    await user.fetch();
 
     const statusType = {
       idle: '1FJj7pX.png',
@@ -223,7 +224,7 @@ module.exports = {
       .setStyle(ButtonStyle.Link)
       .setURL(
         `${
-          user.avatarURL({ size: 1024, dynamic: true, format: 'png' }) ||
+          user.avatarURL({ size: 1024, dynamic: true, extension: 'png' }) ||
           'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/75bff394-4f86-45a8-a923-e26223aa74cb/de901o7-d61b3bfb-f1b1-453b-8268-9200130bbc65.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzc1YmZmMzk0LTRmODYtNDVhOC1hOTIzLWUyNjIyM2FhNzRjYlwvZGU5MDFvNy1kNjFiM2JmYi1mMWIxLTQ1M2ItODI2OC05MjAwMTMwYmJjNjUucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.aEck9OnRf_XJzrEzZNvrGS2XpAlo2ixuxoAX5fgpNnw'
         }`
       );
