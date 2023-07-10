@@ -222,7 +222,14 @@ module.exports = {
       sub.setName('space').setDescription('Shows latest space informations.')
     ),
 
+    /**
+     * 
+     * @param {ChatInputCommandInteraction} interaction 
+     * @param {Client} client 
+     * @returns 
+     */
   async execute(interaction, client) {
+    await interaction.deferReply({ ephemeral: true });
     if (interaction.options.getSubcommand() == 'anime') {
       const search = interaction.options.getString('query');
       await interaction.deferReply();
@@ -437,7 +444,7 @@ module.exports = {
           .setDisabled(true)
       );
 
-      interaction.reply({ embeds: [embed], components: [components] });
+      interaction.editReply({ embeds: [embed], components: [components] });
     } else if (interaction.options.getSubcommand() === 'covid-countries') {
       let countries = interaction.options.getString('country') || '';
       axios
@@ -485,7 +492,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
                 inline: false,
               }
             );
-          interaction.reply({ embeds: [embed] });
+          interaction.editReply({ embeds: [embed] });
         })
         .catch(e => {
           console.log(e);
@@ -498,7 +505,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             .setTimestamp()
             .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-          interaction.reply({ embeds: [err_embed], ephemeral: true });
+          interaction.editReply({ embeds: [err_embed], ephemeral: true });
         });
     } else if (interaction.options.getSubcommand() === 'covid-world-wide') {
       axios
@@ -540,7 +547,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
                 inline: true,
               }
             );
-          interaction.reply({ embeds: [embed] });
+          interaction.editReply({ embeds: [embed] });
         });
     } else if (interaction.options.getSubcommand() === 'member-count') {
       const members = interaction.guild.members.cache;
@@ -599,7 +606,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           }
         )
         .setTimestamp();
-      interaction.reply({ embeds: [embed] });
+      interaction.editReply({ embeds: [embed] });
     } else if (interaction.options.getSubcommand() === 'npm') {
       const target = interaction.options.getString('name') || '';
       axios
@@ -658,7 +665,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
               .setStyle('Secondary')
               .setDisabled(true)
           );
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [embed],
             components: [bcomponents],
             ephemeral: false,
@@ -722,7 +729,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             .setColor('#2F3136')
             .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-          return interaction.reply({ embeds: [embed] });
+          return interaction.editReply({ embeds: [embed] });
         });
     } else if (interaction.options.getSubcommand() === 'reddit') {
       const subreddit = interaction.options.getString('subreddit') || '';
@@ -742,7 +749,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             .setDescription(
               'No **Age-Restricted** content allowed in this channel. Go to a channel where **NSFW** is *enabled*.'
             );
-          return interaction.reply({ embeds: [embed], ephemeral: true });
+          return interaction.editReply({ embeds: [embed], ephemeral: true });
         }
 
         embed
@@ -773,7 +780,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           )
           .setImage(response.data.url);
 
-        const reply = await interaction.reply({
+        const reply = await interaction.editReply({
           embeds: [embed],
           fetchReply: true,
         });
@@ -788,7 +795,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             .setTitle('🔍 Unable to find content or subreddit')
             .setDescription(error.response.data.message);
 
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.editReply({ embeds: [embed], ephemeral: true });
       }
     } else if (interaction.options.getSubcommand() === 'role') {
       const role = interaction.options.getRole('role');
@@ -809,7 +816,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
 **\`•\` Mentionable**: **\`${mentionable}\`**
 **\`•\` Role Color**: **\`${role.hexColor}\`**`,
         });
-      await interaction.reply({ embeds: [embed] });
+      await interaction.editReply({ embeds: [embed] });
     } else if (interaction.options.getSubcommand() === 'role-perm') {
       const role = interaction.options.getRole('target');
       const rolePermissions = role.permissions
@@ -833,7 +840,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
         .setTimestamp()
         .setColor('#2F3136')
         .setFooter({ text: '©2022 - 2023 | Reliable' });
-      interaction.reply({ embeds: [embed], ephemeral: true });
+      interaction.editReply({ embeds: [embed], ephemeral: true });
     } else if (interaction.options.getSubcommand() === 'server') {
       const { guild } = interaction;
       const { members, channels, emojis, roles, stickers } = guild;
@@ -889,7 +896,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
         ChannelType.GuildCategory,
       ]);
 
-      interaction.reply({
+      interaction.editReply({
         embeds: [
           new EmbedBuilder()
             .setColor('#2F3136')
@@ -1260,7 +1267,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           }`
         );
 
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [embed],
         components: [new ActionRowBuilder().addComponents(avatarbutton)],
         ephemeral: false,
@@ -1290,7 +1297,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
         .setTimestamp()
         .setColor('#2F3136')
         .setFooter({ text: '©2022 - 2023 | Reliable' });
-      interaction.reply({ embeds: [embed], ephemeral: true });
+      interaction.editReply({ embeds: [embed], ephemeral: true });
     } else if (interaction.options.getSubcommand() === 'space') {
       fetch('http://api.open-notify.org/iss-now.json')
         .then(res => res.json())
@@ -1315,7 +1322,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             })
             .setFooter({ text: 'Reliable | Your trusted assistant' })
             .setTimestamp();
-          interaction.reply({ embeds: [Embed] });
+          interaction.editReply({ embeds: [Embed] });
         });
     } else if (interaction.options.getSubcommand() === 'apod') {
       fetch(
@@ -1341,7 +1348,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             )
             .setImage(`${json.hdurl}`)
             .setFooter({ text: '©2022 - 2023 | Reliable' });
-          interaction.reply({ embeds: [Embed] });
+          interaction.editReply({ embeds: [Embed] });
         });
     } else if (interaction.options.getSubcommand() === 'quotes') {
       fetch('https://api.popcat.xyz/quote')
@@ -1352,7 +1359,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             .setColor('#2F3136')
             .setDescription(`>>> **${json.quote}**`)
             .setFooter({ text: '©2022 - 2023 | Reliable' });
-          interaction.reply({ embeds: [Embed] });
+          interaction.editReply({ embeds: [Embed] });
         });
     } else if (interaction.options.getSubcommand() === 'translate') {
       const query = interaction.options.getString('query');
@@ -1387,7 +1394,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           .setColor('#2F3136')
           .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-        return await interaction.reply({ embeds: [Embed] });
+        return await interaction.editReply({ embeds: [Embed] });
       } catch (err) {
         const err_embed = new EmbedBuilder()
           .setTitle('Error')
@@ -1398,7 +1405,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           .setColor('#2F3136')
           .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-        interaction.reply({ embeds: [err_embed], ephemeral: true });
+        interaction.editReply({ embeds: [err_embed], ephemeral: true });
       }
     } else if (interaction.options.getSubcommand() === 'twitter') {
       const user = interaction.options.getString('account');
@@ -1430,7 +1437,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           .setTimestamp()
           .setColor('#2F3136')
           .setFooter({ text: '©2022 - 2023 | Reliable' });
-        interaction.reply({ embeds: [tweet] });
+        interaction.editReply({ embeds: [tweet] });
       } catch (e) {
         console.log(e);
 
@@ -1444,7 +1451,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             .setColor('#2F3136')
             .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-          interaction.reply({ embeds: [err_embed], ephemeral: true });
+          interaction.editReply({ embeds: [err_embed], ephemeral: true });
         }
 
         if (e.status === 404) {
@@ -1457,7 +1464,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
             .setColor('#2F3136')
             .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-          interaction.reply({ embeds: [err_embed2], ephemeral: true });
+          interaction.editReply({ embeds: [err_embed2], ephemeral: true });
         }
       }
     } else if (interaction.options.getSubcommand() === 'movie') {
@@ -1489,7 +1496,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           .setColor('#2F3136')
           .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-        interaction.reply({ embeds: [Embed] });
+        interaction.editReply({ embeds: [Embed] });
       } catch (err) {
         console.log(err);
 
@@ -1502,7 +1509,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           .setColor('#2F3136')
           .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-        interaction.reply({ embeds: [err_embed], ephemeral: true });
+        interaction.editReply({ embeds: [err_embed], ephemeral: true });
       }
     } else if (interaction.options.getSubcommand() === 'season') {
       const country = interaction.options.getString('country');
@@ -1519,7 +1526,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
               .setColor('#2F3136')
               .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-            interaction.reply({ embeds: [Embed] });
+            interaction.editReply({ embeds: [Embed] });
           });
       } catch (err) {
         console.log(err);
@@ -1533,7 +1540,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           .setColor('#2F3136')
           .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-        interaction.reply({ embeds: [err_embed], ephemeral: true });
+        interaction.editReply({ embeds: [err_embed], ephemeral: true });
       }
     } else if (interaction.options.getSubcommand() === 'weather') {
       try {
@@ -1611,7 +1618,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
               .setColor('#2F3136')
               .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-            interaction.reply({ embeds: [Embed] });
+            interaction.editReply({ embeds: [Embed] });
           });
       } catch (err) {
         console.log(err);
@@ -1624,7 +1631,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           .setColor('#2F3136')
           .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-        interaction.reply({ embeds: [err_embed], ephemeral: true });
+        interaction.editReply({ embeds: [err_embed], ephemeral: true });
       }
     } else if (interaction.options.getSubcommand() === 'country') {
       try {
@@ -1684,7 +1691,7 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
                 .setURL(`${data.maps.googleMaps}`)
             );
 
-            interaction.reply({ embeds: [Embed], components: [googlemap] });
+            interaction.editReply({ embeds: [Embed], components: [googlemap] });
           });
       } catch (err) {
         console.log(err);
@@ -1697,10 +1704,10 @@ The virus can spread from an infected person’s mouth or nose in small liquid p
           .setColor('#2F3136')
           .setFooter({ text: '©2022 - 2023 | Reliable' });
 
-        interaction.reply({ embeds: [err_embed], ephemeral: true });
+        interaction.editReply({ embeds: [err_embed], ephemeral: true });
       }
     } else {
-      interaction.reply({ content: `No sub command choosed` });
+      interaction.editReply({ content: `No sub command choosed` });
     }
   },
 };
