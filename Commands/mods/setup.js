@@ -9,6 +9,7 @@ import {
 } from 'discord.js';
 import { Colors } from 'discordjs-colors-bundle';
 import VerificationRole from '../../Schemas/VerificationSchema';
+import GuildIDs from '../../Schemas/AntiToxic';
 
 let roleId = null;
 
@@ -87,6 +88,11 @@ module.exports = {
             .setDescription('The emoji for the button.')
             .setRequired(false)
         )
+    )
+    .addSubcommand(sub =>
+      sub
+        .setName('anti-toxic')
+        .setDescription('Setup Anti Toxic for your server.')
     ),
 
   /**
@@ -193,6 +199,18 @@ module.exports = {
 
         return channel.send({ embeds: [Embed], components: [buttons] });
       }
+    } else if (interaction.options.getSubcommand() == 'anti-toxic') {
+      const guildId = interaction?.guild.id;
+      const alreadyEnabled = await GuildIDs.findOne({ guildId });
+
+      if (alreadyEnabled) {
+        return interaction.reply({ content: 'Anti-Toxic is already enabled.' });
+      }
+      const GuildIDData = new GuildIDs({ guildId: guildId });
+
+      await GuildIDData.save();
+
+      return interaction.reply({ content: 'Successfully Enabled Anti-Toxic!' });
     }
   },
 };
