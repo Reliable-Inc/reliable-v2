@@ -30,10 +30,11 @@ module.exports = {
    */
   async execute(interaction, client) {
     const userCooldowned = await cooldown.getUser(interaction.user.id);
+    await interaction.deferReply({ ephemeral: true });
 
     if (userCooldowned) {
       const timeLeft = msToMinutes(userCooldowned.msLeft, false);
-      return interaction.reply({
+      return interaction.editReply({
         content: `You are in a cooldown. Time left: ${timeLeft.seconds}`,
       });
     }
@@ -59,7 +60,7 @@ module.exports = {
           value: `||**\`${toSay}\`**||`,
         });
 
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return interaction.editReply({ embeds: [embed], ephemeral: true });
     }
 
     if (toSay.includes('@')) {
@@ -71,7 +72,7 @@ module.exports = {
           `**<:reliable_wrong:1043155193077960764> | \`Sorry, but you cannot send messages with mentions.\`**`
         );
 
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return interaction.editReply({ embeds: [embed], ephemeral: true });
     }
     try {
       await interaction.channel.send(toSay);
@@ -85,7 +86,7 @@ module.exports = {
           value: `<:reliable_right:1042843202429919272> **\`Successfully sent.\`**`,
         });
 
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return interaction.editReply({ embeds: [embed], ephemeral: true });
     } catch (error) {
       console.error(error);
       const embed = new EmbedBuilder()
@@ -97,11 +98,11 @@ module.exports = {
         )
         .addFields({
           name: '__Status__',
-          value: `**\`Successfully sent.\`**`,
+          value: `**\`Couldn't sent.\`**`,
         });
 
       await interaction
-        .reply({ embeds: [embed], ephemeral: true })
+        .editReply({ embeds: [embed], ephemeral: true })
         .then(async () => {
           await cooldown.addUser(interaction.user.id);
         });

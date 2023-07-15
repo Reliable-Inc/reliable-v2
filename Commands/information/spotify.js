@@ -1,6 +1,6 @@
 import { CustomRGB } from 'discordjs-colors-bundle';
-import * as Musixmatch from 'musixmatch-api-node';
-const { MusixmatchAPI } = Musixmatch;
+import * as MXM from 'node-musixmatch-api';
+const { Musixmatch } = MXM;
 const {
   SlashCommandBuilder,
   ButtonBuilder,
@@ -10,7 +10,7 @@ const {
   ChatInputCommandInteraction,
   Client,
 } = require('discord.js');
-const mxm = new MusixmatchAPI(process?.env['Musixmatch'].toString());
+const mxm = new Musixmatch(process?.env['Musixmatch'].toString());
 const puppeteer = require('puppeteer');
 
 async function wrapAPI(apiUrl) {
@@ -111,7 +111,7 @@ async function getTrackInfo(artistName, trackName) {
 }
 
 module.exports = {
-  beta: true,
+  beta: false,
   data: new SlashCommandBuilder()
     .setName('spotify')
     .setDescription(
@@ -132,144 +132,7 @@ module.exports = {
    * @returns
    */
   async execute(interaction, client) {
-    if (interaction.options.getSubcommand() == 'current') {
-      try {
-        await interaction.deferReply({ ephemeral: true });
-        const member = interaction.member;
-        const activity = member.presence.activities.find(
-          activity => activity.type === 2 && activity.name === 'Spotify'
-        );
-
-        if (activity) {
-          const trackName = activity.details || 'Unknown';
-          let artistName = activity.state.toString() || 'Unknown';
-          if (artistName.includes(';')) {
-            artistName = artistName.replace(/;/g, '');
-          }
-
-          const semicolonCount = (activity.state.toString().match(/;/g) || [])
-            .length;
-          let aName = 'Unknown';
-
-          if (semicolonCount === 1) {
-            aName = activity.state.toString().replace(';', ' feat.');
-          } else if (semicolonCount === 2) {
-            aName = activity.state
-              .toString()
-              .replace(';', ' feat.')
-              .replace(';', ' &');
-          } else if (semicolonCount >= 3) {
-            aName = activity.state
-              .toString()
-              .replace(';', ' feat.')
-              .replace(';', ',')
-              .replace(/;/g, ' &');
-          } else {
-            aName = activity.state.toString().replace(/;/g, ',');
-          }
-
-          const info = await getTrackInfo(artistName, trackName);
-
-          const trackInfo = await mxm.trackSearch({
-            artistName: artistName,
-            trackName: trackName,
-          });
-          const id = trackInfo?.track_id;
-          const hasLyrics = (await mxm.hasLyrics({
-            artistName: artistName,
-            trackName: trackName,
-          }))
-            ? 'Yes'
-            : 'No';
-          const deepSearch = await mxm.trackSearch({
-            artistName: artistName,
-            trackName: trackName,
-            id: id,
-            isrc: info?.isrc,
-          });
-          const albumName = info.album;
-
-          const isInstrumental = (await mxm.isInstrumental({
-            artistName: artistName,
-            trackName: trackName,
-          }))
-            ? 'Yes'
-            : 'No';
-          const isExplicit = (await mxm.isExplicit({
-            artistName: artistName,
-            trackName: trackName,
-          }))
-            ? 'Yes'
-            : 'No';
-          const trackRating = deepSearch?.track_rating;
-
-          const Embed = new EmbedBuilder()
-            .setTitle(`__Your spotify status__`)
-            .setColor(`#2F3136`)
-            .setFooter({ text: 'Reliable | Your trusted assistant' })
-            .setDescription(
-              `Presenting an extensive and thorough overview of the complete information pertaining to your current Spotify listening session, including track name, artist name, album details, availability of lyrics, instrumental status, and explicit content classification. Please find the comprehensive report below, offering detailed insights into your present Spotify experience.`
-            )
-            .addFields({
-              name: '__Track Information__',
-              value: `**\`‣\` Artist Name**: \`${
-                aName || 'N/A'
-              }\`\n**\`‣\` Album Name**: \`${
-                albumName ?? 'N/A'
-              }\`\n**\`‣\` Explicit**: \`${isExplicit ?? 'Yes'}\``,
-            })
-            .setImage(albumIcon);
-
-          const bcomponents = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-              .setCustomId('torbap')
-              .setLabel(`Track Name: ${trackName ?? 'N/A'}`)
-              .setStyle('Secondary')
-              .setDisabled(true),
-            new ButtonBuilder()
-              .setCustomId('chudi')
-              .setLabel(`Has Lyrics?: ${hasLyrics ?? 'No'}`)
-              .setStyle('Secondary')
-              .setDisabled(true),
-            new ButtonBuilder()
-              .setCustomId('kutta')
-              .setLabel(`Instrumental: ${isInstrumental ?? 'Yes'}`)
-              .setStyle('Secondary')
-              .setDisabled(true),
-            new ButtonBuilder()
-              .setCustomId('kuttachuda')
-              .setLabel(`Track Rating: ${trackRating ?? '0'}`)
-              .setStyle('Secondary')
-              .setDisabled(true)
-          );
-          return interaction.editReply({
-            embeds: [Embed],
-            components: [bcomponents],
-            ephemeral: true,
-          });
-        } else {
-          const embed1 = new EmbedBuilder()
-            .setColor(`#2F3136`)
-            .setFooter({ text: 'Reliable | Your trusted assistant' })
-            .setTitle('Error | 404 Not Found')
-            .setDescription(`<:reliable_dnd:1044914867779412078> | 
-Regrettably, it appears that you are not presently engaged in any Spotify audio playback activity. Thus, there is no current record of Spotify streaming from your account. Should you initiate playback in the future, your Spotify listening status will be promptly updated and made available for retrieval.`);
-          return interaction.editReply({ embeds: [embed1], ephemeral: true });
-        }
-      } catch (e) {
-        const embed = new EmbedBuilder()
-          .setColor(`#2F3136`)
-          .setFooter({ text: 'Reliable | Your trusted assistant' })
-          .setTitle('Error | 500 Internal Server')
-          .setDescription(
-            `<:reliable_dnd:1044914867779412078> | The server encountered an unexpected condition that prevented it from fulfilling the request. It is an internal error on the server side, typically caused by misconfigurations, software bugs, or server overload. Users should contact the server administrator for resolution.`
-          );
-
-        console.log(e);
-
-        return interaction.editReply({ embeds: [embed], ephemeral: true });
-      }
-    } else if (interaction.options.getSubcommand() == 'info') {
+    if (interaction.options.getSubcommand() == 'info') {
       await interaction.deferReply({ ephemeral: true });
       const member = interaction.member;
       const activity = member.presence.activities.find(
@@ -332,40 +195,27 @@ Regrettably, it appears that you are not presently engaged in any Spotify audio 
           .toString()
           .padStart(2, '0')}`;
 
-        const trackInfo = await mxm.trackSearch({
-          artistName: artistName,
-          trackName: trackName,
-        });
-        const id = trackInfo?.track_id;
-        const hasLyrics = (await mxm.hasLyrics({
-          artistName: artistName,
-          trackName: trackName,
-        }))
-          ? 'Yes'
-          : 'No';
-        const deepSearch = await mxm.trackSearch({
-          artistName: artistName,
-          trackName: trackName,
-          id: id,
-          isrc: info?.isrc,
-        });
+                const deepSearch = await mxm.trackGet(`track_isrc=${info?.isrc}`);
+
+        const id = deepSearch?.message.body.track.track_id;
         const albumName = info?.album;
-        const isInstrumental = (await mxm.isInstrumental({
-          artistName: artistName,
-          trackName: trackName,
-        }))
+                const hasLyrics = deepSearch?.message.body.track.has_lyrics
           ? 'Yes'
           : 'No';
-        const isExplicit = (await mxm.isExplicit({
-          artistName: artistName,
-          trackName: trackName,
-        }))
+
+        const isInstrumental = deepSearch?.message.body.track.instrumental
           ? 'Yes'
           : 'No';
-        const trackRating = deepSearch?.track_rating;
+        const isExplicit = deepSearch?.message.body.track.explicit
+          ? 'Yes'
+          : 'No';
+        const trackRating = deepSearch?.message.body.track.track_rating;
 
         const Embed = new EmbedBuilder()
           .setTitle(`__Your spotify status__`)
+          .setDescription(
+            `Presenting an extensive and thorough overview of the complete information pertaining to your current Spotify listening session, including track name, artist name, album details, availability of lyrics, instrumental status, and explicit content classification. Please find the comprehensive report below, offering detailed insights into your present Spotify experience.`
+          )
           .setColor(`#2F3136`)
           .setFooter({ text: 'Reliable | Your trusted assistant' })
           // .setDescription(`## Lyrics:\n${lyrics}`) Hup beta! Eida add disos kan  -_- lyrics 30% dey Musixmatch.
@@ -377,7 +227,7 @@ Regrettably, it appears that you are not presently engaged in any Spotify audio 
               albumName ?? 'N/A'
             }\`\n**\`‣\` Explicit**: \`${
               isExplicit ?? 'Yes'
-            }\`\n**\`‣\` Duration**: \`${formattedDuration ?? '0:00'}\``,
+            }\`\n**\`‣\` Duration**: \`${formattedDuration ?? '0:00'}\`\n**\`‣\` ISRC**: \`${info?.isrc ?? 'ABCDEFGH123'}\``,
           })
           .setThumbnail(albumIcon);
 

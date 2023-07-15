@@ -13,6 +13,7 @@ import VerificationRole from '../../Schemas/VerificationSchema';
 let roleId = null;
 
 module.exports = {
+  beta: true,
   data: new SlashCommandBuilder()
     .setName('setup')
     .setDescription('Setup command.')

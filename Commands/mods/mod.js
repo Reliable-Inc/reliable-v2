@@ -17,7 +17,7 @@ const e = require('express');
 const ms = require('ms');
 
 module.exports = {
-  beta: true,
+  beta: false,
   data: new SlashCommandBuilder()
     .setName('moderation')
     .setDescription('Moderation commands')

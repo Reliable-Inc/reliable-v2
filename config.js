@@ -12,6 +12,7 @@ const Configuration = {
     activityType: ActivityType.Watching,
   },
   guildId: '1029777893112418314', // Will be removed when it is public.
+  redirectUri: 'https://reliable-v2.mohtasimalamsoh.repl.co/callback',
 };
 
 export default Configuration;

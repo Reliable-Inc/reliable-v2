@@ -4,9 +4,10 @@ const {
   EmbedBuilder,
   ButtonBuilder,
   ActionRowBuilder,
-  ButtonStyle
+  ButtonStyle,
 } = require('discord.js');
 const { colors } = require('discordjs-colors-bundle');
+const axios = require("axios");
 
 module.exports = {
   developer: true,
@@ -16,8 +17,9 @@ module.exports = {
 
   async execute(interaction, client) {
     await interaction.deferReply({ ephemeral: true });
+    const guild = client.guilds.cache.get(interaction.guild.id);
     const target =
-      interaction.guild.members.cache.get(interaction.targetUser) ??
+      guild.members.cache.get(interaction.targetUser.id) ??
       interaction.member;
 
     const { user, presence, roles } = target;
@@ -112,10 +114,10 @@ module.exports = {
 
       return result.length;
     };
-    const response = await fetch(
-      `https://japi.rest/discord/v1/user/${target.id}`
+    const response = await axios.get(
+      `https://japi.rest/discord/v1/user/${target}`
     );
-    const data = await response.json();
+    const data = response;
 
     const sortedRoles = roles.cache
       .map(role => role)

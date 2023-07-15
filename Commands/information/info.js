@@ -21,7 +21,7 @@ const mal = require('mal-scraper');
 const { json } = require('stream/consumers');
 
 module.exports = {
-  beta: true,
+  beta: false,
   data: new SlashCommandBuilder()
     .setName('info')
     .setDescription('info command')
@@ -58,7 +58,7 @@ module.exports = {
 
     .addSubcommand(sub =>
       sub
-        .setName('covid-countries')
+        .setName('covid')
         .setDescription("Track 🌍 a country's COVID-19 cases 📊")
         .addStringOption(op =>
           op
@@ -74,11 +74,6 @@ module.exports = {
         .addStringOption(op =>
           op.setName('name').setDescription('Country name').setRequired(true)
         )
-    )
-    .addSubcommand(sub =>
-      sub
-        .setName('covid-world-wide')
-        .setDescription('Track worldwide COVID-19 cases')
     )
     .addSubcommand(sub =>
       sub
@@ -222,17 +217,16 @@ module.exports = {
       sub.setName('space').setDescription('Shows latest space informations.')
     ),
 
-    /**
-     * 
-     * @param {ChatInputCommandInteraction} interaction 
-     * @param {Client} client 
-     * @returns 
-     */
+  /**
+   *
+   * @param {ChatInputCommandInteraction} interaction
+   * @param {Client} client
+   * @returns
+   */
   async execute(interaction, client) {
     await interaction.deferReply({ ephemeral: true });
     if (interaction.options.getSubcommand() == 'anime') {
       const search = interaction.options.getString('query');
-      await interaction.deferReply();
       mal.getInfoFromName(search).then(data => {
         if (data.rating == 'Rx - Hentai' && !interaction.channel.nsfw) {
           const embed2 = new EmbedBuilder()
@@ -351,7 +345,8 @@ module.exports = {
         }
       });
     } else if (interaction.options.getSubcommand() === 'channel') {
-      let channel = interaction.options.getChannel('channel') || '';
+      let channel =
+        interaction.options.getChannel('channel') || interaction.channel;
 
       const webhooks = await channel.fetchWebhooks();
       const webhookArray = webhooks.size;
@@ -377,7 +372,7 @@ module.exports = {
         channeltype = 'Category';
       }
       if (channel.type === 5) {
-        channeltype = 'ANNOUNCEMENT';
+        channeltype = 'Announcement';
       }
       if (channel.type === 10) {
         channeltype = 'Text';
@@ -395,34 +390,29 @@ module.exports = {
         channeltype = 'Text';
       }
       const embed = new EmbedBuilder()
-        .setTitle(`Channel Information`)
-        .setThumbnail(
-          interaction.guild.iconURL({
-            format: 'png',
-            dynamic: true,
-            size: 1024,
-          })
+        .setTitle(`__Channel Information__`)
+        .setDescription(
+          `${
+            channel.topic ||
+            'No topic found about this channel! Consider adding one.'
+          }`
         )
-        .setFooter({ text: '©2022 - 2023 | Reliable' })
+        .setFooter({ text: 'Reliable | Your trusted assistant' })
         .addFields(
           {
-            name: 'ChannelInfo:',
-            value: `**\`•\` Name**: ${channel}
-**\`•\` Description**: ${channel.topic || 'None'}
-**\`•\` ID**: ${channel.id}
-**\`•\` Category**: ${channel.parentId ? `${channel.parent.name}` : 'None'}
-**\`•\` Total Webhooks**: ${webhookArray || 'None'}
-**\`•\` Created**: <t:${parseInt(channel.createdTimestamp / 1000)}:R>`,
+            name: '__Channel Details__',
+            value: `**\`»\` Name**: ${channel}
+**\`»\` ID**: \`${channel.id}\`
+**\`»\` Category**: \`${channel.parentId ? `${channel.parent.name}` : 'None'}\`
+**\`»\` Total Webhooks**: \`${webhookArray || 'None'}\`
+**\`»\` Created**: <t:${parseInt(channel.createdTimestamp / 1000)}:R>`,
             inline: false,
           },
           {
-            name: 'VC',
-            value: `
-**\`•\` Members**: ${memberArray || 'None'}
-**\`•\` Max Members**: ${channel.userLimit || 'None'}
-**\`•\` Bitrate**: ${channel.bitrate || 'None'}
-          ㅤ
-          `,
+            name: '__Voice Channel__',
+            value: `**\`•\` Members**: \`${memberArray || 'None'}\`
+**\`•\` Max Members**: \`${channel.userLimit || 'None'}\`
+**\`•\` Bitrate**: \`${channel.bitrate || 'None'}\``,
           }
         )
         .setColor(CustomHex('#2F3136'));
@@ -445,109 +435,78 @@ module.exports = {
       );
 
       interaction.editReply({ embeds: [embed], components: [components] });
-    } else if (interaction.options.getSubcommand() === 'covid-countries') {
-      let countries = interaction.options.getString('country') || '';
+    } else if (interaction.options.getSubcommand() === 'covid') {
+      let countries = interaction.options.getString('country');
       axios
         .get(`https://disease.sh/v2/countries/${countries}`)
         .then(response => response.data)
         .then(data => {
           const embed = new EmbedBuilder()
-            .setTitle(`Coronavirus | Countries Stats`)
+            .setTitle(`__Coronavirus__`)
             .setDescription(
-              `>>> Coronavirus disease (COVID-19) is an infectious disease caused by the SARS-CoV-2 virus. Coronavirus disease (COVID-19) is an infectious disease caused by the SARS-CoV-2 virus.
-Most people who fall sick with COVID-19 will experience mild to moderate symptoms and recover without special treatment. However, some will become seriously ill and require medical attention.
-The virus can spread from an infected person’s mouth or nose in small liquid particles when they cough, sneeze, speak, sing or breathe. These particles range from larger respiratory droplets to smaller aerosols. It is important to practice respiratory etiquette, for example by coughing into a flexed elbow, and to stay home and self-isolate until you recover if you feel unwell.`
+              `Coronavirus disease (COVID-19) is an infectious disease caused by the SARS-CoV-2 virus. Coronavirus disease (COVID-19) is an infectious disease caused by the SARS-CoV-2 virus.
+Most people who fall sick with COVID-19 will experience mild to moderate symptoms and recover without special treatment. However, some will become seriously ill and require medical attention.`
             )
             .setColor(CustomHex('#2F3136'))
-            .setTimestamp()
-            .setImage(
-              'https://www.fda.gov/files/how-you-can-make-a-difference-1600x900.png'
-            )
-            .setFooter({ text: '©2022 - 2023 | Reliable' })
+            .setFooter({ text: 'Reliable | Your trusted assistant' })
             .setThumbnail(data?.countryInfo.flag)
-            .addFields(
-              {
-                name: '`🍁` | Country Infomation',
-                value: `**\`•\` Country Name**: **\`${data.country}\`**
-**\`•\` Lat & Lon**: **\`${data?.countryInfo.lat} & ${
-                  data?.countryInfo.long
-                }\`**
-**\`•\` Population**: **\`${data?.population.toString()}\`**
-**\`•\` Continent**: **\`${data?.continent.toString()}\`**`,
-                inline: false,
-              },
-              {
-                name: '`😷` | Cases Total',
-                value: `**\`•\` Cases Total**: **\`${data?.cases.toString()}\`**
-**\`•\` Cases Today**: **\`${data?.todayCases.toString()}\`**
-**\`•\` Deaths Total**: **\`${data?.deaths.toString()}\`**
-**\`•\` Deaths Today**: **\`${data?.todayDeaths.toString()}\`**
-**\`•\` Recovered**: **\`${data?.recovered.toString()}\`**
-**\`•\` Active**: **\`${data?.active.toString()}\`**
-**\`•\` Critical**: **\`${data?.critical.toString()}\`**
-**\`•\` Cases per 1 million**: **\`${data?.casesPerOneMillion.toString()}\`**
-**\`•\` Deaths per 1 million**: **\`${data?.deathsPerOneMillion.toString()}\`**
-**\`•\` Recovered per 1 million**: **\`${data?.recoveredPerOneMillion.toString()}\`**
+            .addFields({
+              name: '__Information__',
+              value: `**\`»\` Cases Total**: \`${data?.cases.toString()}\`
+**\`»\` Cases Today**: \`${data?.todayCases.toString()}\`
+**\`»\` Deaths Total**: \`${data?.deaths.toString()}\`
+**\`»\` Deaths Today**: \`${data?.todayDeaths.toString()}\`
+**\`»\` Recovered**: \`${data?.recovered.toString()}\`
+**\`»\` Active**: \`${data?.active.toString()}\`
+**\`»\` Critical**: \`${data?.critical.toString()}\`
+**\`»\` Cases per 1 million**: \`${data?.casesPerOneMillion.toString()}\`
+**\`»\` Deaths per 1 million**: \`${data?.deathsPerOneMillion.toString()}\`
+**\`»\` Recovered per 1 million**: \`${data?.recoveredPerOneMillion.toString()}\`
                 `,
-                inline: false,
-              }
-            );
-          interaction.editReply({ embeds: [embed] });
+              inline: false,
+            });
+
+          const components = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+              .setCustomId('YES')
+              .setLabel(`Country Name: ${data.country}`)
+              .setStyle('Secondary')
+              .setDisabled(true),
+            new ButtonBuilder()
+              .setCustomId('NO')
+              .setLabel(
+                `Lat & Lon: ${data?.countryInfo.lat} & ${data?.countryInfo.long}`
+              )
+              .setStyle('Secondary')
+              .setDisabled(true),
+            new ButtonBuilder()
+              .setCustomId('idk')
+              .setLabel(`Population: ${data?.population.toString()}`)
+              .setStyle('Secondary')
+              .setDisabled(true),
+            new ButtonBuilder()
+              .setCustomId('idkh')
+              .setLabel(`Continent: ${data?.continent.toString()}`)
+              .setStyle('Secondary')
+              .setDisabled(true)
+          );
+
+          interaction.editReply({ embeds: [embed], components: [components] });
         })
         .catch(e => {
           console.log(e);
-          const err_embed = new EmbedBuilder()
-            .setTitle('Error')
+          const Embed = new EmbedBuilder()
+            .setTitle('Error | 500 Internal Server')
+            .setColor(`#2F3136`)
+            .addFields({
+              name: '<:reliable_offline:1040907697853321366> | __Found__',
+              value: '```' + e + '```',
+            })
+            .setFooter({ text: 'Reliable | Your trusted assistant.' })
             .setDescription(
-              '<:reliable_wrong:1043155193077960764> | Invaild Country'
-            )
-            .setColor(CustomHex('#2F3136'))
-            .setTimestamp()
-            .setFooter({ text: '©2022 - 2023 | Reliable' });
-
-          interaction.editReply({ embeds: [err_embed], ephemeral: true });
-        });
-    } else if (interaction.options.getSubcommand() === 'covid-world-wide') {
-      axios
-        .get(`https://covid19.mathdro.id/api`)
-        .then(response => response.data)
-        .then(data => {
-          let confirmed = data.confirmed.value.toLocaleString();
-          let recovered = data.recovered.value.toLocaleString();
-          let deaths = data.deaths.value.toLocaleString();
-
-          const embed = new EmbedBuilder()
-            .setTitle(`Coronavirus | Worldwide Stats`)
-            .setDescription(
-              `>>> Coronavirus disease (COVID-19) is an infectious disease caused by the SARS-CoV-2 virus. Coronavirus disease (COVID-19) is an infectious disease caused by the SARS-CoV-2 virus.
-Most people who fall sick with COVID-19 will experience mild to moderate symptoms and recover without special treatment. However, some will become seriously ill and require medical attention.
-The virus can spread from an infected person’s mouth or nose in small liquid particles when they cough, sneeze, speak, sing or breathe. These particles range from larger respiratory droplets to smaller aerosols. It is important to practice respiratory etiquette, for example by coughing into a flexed elbow, and to stay home and self-isolate until you recover if you feel unwell.`
-            )
-            .setColor(CustomHex('#2F3136'))
-            .setTimestamp()
-            .setImage(
-              'https://www.fda.gov/files/how-you-can-make-a-difference-1600x900.png'
-            )
-            .setFooter({ text: '©2022 - 2023 | Reliable' })
-            .addFields(
-              {
-                name: 'Location',
-                value: `> **\`WorldWide\`**`,
-                inline: true,
-              },
-
-              {
-                name: 'Total Confirmed Cases',
-                value: `> **\`${confirmed}\`**`,
-                inline: true,
-              },
-              {
-                name: 'Total Deaths',
-                value: `> **\`${deaths}\`**`,
-                inline: true,
-              }
+              `<:reliable_dnd:1044914867779412078> | The server encountered an unexpected condition that prevented it from fulfilling the request. It is an internal error on the server side, typically caused by misconfigurations, software bugs, or server overload. Users should contact the server administrator for resolution.`
             );
-          interaction.editReply({ embeds: [embed] });
+          interaction.editReply({ embeds: [Embed], ephemeral: true });
         });
     } else if (interaction.options.getSubcommand() === 'member-count') {
       const members = interaction.guild.members.cache;

@@ -10,6 +10,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+const cookieParser = require('cookie-parser');
 import {
   Client,
   Collection,
@@ -22,8 +23,13 @@ import chalk from 'chalk';
 import ServerKey from './Schemas/ServerKey';
 import * as cb from 'discordjs-colors-bundle';
 import Report from './Schemas/Reports';
-
+const Configuration = require('./config');
+import axios from 'axios';
 dotenv.config();
+
+const clientId = process.env.ClientId;
+const clientSecret = process.env.ClientSecret;
+const redirectUri = Configuration.default.redirectUri;
 
 const app = express();
 const port = 3000;
@@ -34,30 +40,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 // Express Server
 app.use(cors());
 app.use(express.json());
-
-app.get('/generate-server-key', async (req, res) => {
-  try {
-    const secretKey = process.env.SECRET_KEY;
-    if (!secretKey) {
-      throw new Error('SECRET_KEY is not set in the environment variables.');
-    }
-
-    const serverKey = crypto.createHmac('sha256', secretKey).digest('hex');
-
-    const newServerKey = new ServerKey({ key: serverKey });
-    await newServerKey.save();
-
-    return res.status(200).json({ key: serverKey });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: 'Internal Server Error',
-      hint: {
-        error: err.message,
-      },
-    });
-  }
-});
+app.use(cookieParser());
 
 const validateServerKey = async (req, res, next) => {
   try {
@@ -489,6 +472,74 @@ client.commands = new Collection();
 client.buttons = new Collection();
 client.selectMenus = new Collection();
 client.modals = new Collection();
+
+const oauthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+  redirectUri
+)}&response_type=code&scope=identify email`;
+
+app.get('/login', (req, res) => {
+  res.redirect(oauthUrl);
+});
+
+app.get('/callback', async ({ query }, response) => {
+  const { code } = query;
+
+  if (code) {
+    try {
+      const tokenResponse = await axios.post(
+        'https://discord.com/api/oauth2/token',
+        new URLSearchParams({
+          client_id: clientId,
+          client_secret: clientSecret,
+          code,
+          grant_type: 'authorization_code',
+          redirect_uri: `https://reliable-v2.mohtasimalamsoh.repl.co/callback`,
+          scope: 'identify email',
+        }).toString(),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+
+      const oauthData = tokenResponse.data;
+
+      response.cookie('access_token', oauthData.access_token);
+      response.cookie('token_type', oauthData.token_type);
+    } catch (error) {
+      // NOTE: An unauthorized token will not throw an error
+      // tokenResponse.status will be 401
+      console.error(error);
+    }
+  }
+
+  return response.send('Success!');
+});
+
+app.get('/api/v1/user.info', validateServerKey, async (req, res) => {
+  const tokenType = req.cookies.token_type;
+  const accessToken = req.cookies.access_token;
+  const userResult = await axios.get('https://discord.com/api/users/@me', {
+    headers: {
+      Authorization: `${tokenType} ${accessToken}`,
+    },
+  });
+
+  if (userResult.status == 401 || userResult.status == 404) {
+    return res.status(601).json({
+      body: {
+        hint: 'Multiple problems while fetching a ThirdParty API.',
+        status: {
+          message: 'API Fetch Error',
+          code: 601,
+        },
+      },
+    });
+  }
+
+  res.status(200).json(userResult.data);
+});
 
 // Commands
 const commandFolder = fs.readdirSync('./Commands');
