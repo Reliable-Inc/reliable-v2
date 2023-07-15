@@ -195,11 +195,11 @@ module.exports = {
           .toString()
           .padStart(2, '0')}`;
 
-                const deepSearch = await mxm.trackGet(`track_isrc=${info?.isrc}`);
+        const deepSearch = await mxm.trackGet(`track_isrc=${info?.isrc}`);
 
         const id = deepSearch?.message.body.track.track_id;
         const albumName = info?.album;
-                const hasLyrics = deepSearch?.message.body.track.has_lyrics
+        const hasLyrics = deepSearch?.message.body.track.has_lyrics
           ? 'Yes'
           : 'No';
 
@@ -227,7 +227,9 @@ module.exports = {
               albumName ?? 'N/A'
             }\`\n**\`‣\` Explicit**: \`${
               isExplicit ?? 'Yes'
-            }\`\n**\`‣\` Duration**: \`${formattedDuration ?? '0:00'}\`\n**\`‣\` ISRC**: \`${info?.isrc ?? 'ABCDEFGH123'}\``,
+            }\`\n**\`‣\` Duration**: \`${
+              formattedDuration ?? '0:00'
+            }\`\n**\`‣\` ISRC**: \`${info?.isrc ?? 'ABCDEFGH123'}\``,
           })
           .setThumbnail(albumIcon);
 
