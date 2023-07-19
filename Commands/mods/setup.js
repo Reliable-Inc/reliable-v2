@@ -10,6 +10,9 @@ import {
 import { Colors } from 'discordjs-colors-bundle';
 import VerificationRole from '../../Schemas/VerificationSchema';
 import GuildIDs from '../../Schemas/AntiToxic';
+import AntiThreatGuildIDs from '../../Schemas/AntiThreat';
+import AntiInsultGuildIDs from '../../Schemas/antiInsult';
+import AntiObsceneGuildIDs from '../../Schemas/AntiObscene';
 
 let roleId = null;
 
@@ -93,6 +96,21 @@ module.exports = {
       sub
         .setName('anti-toxic')
         .setDescription('Setup Anti Toxic for your server.')
+    )
+    .addSubcommand(sub =>
+      sub
+        .setName('anti-threat')
+        .setDescription('Setup Anti Threating for your server.')
+    )
+    .addSubcommand(sub =>
+      sub
+        .setName('anti-insult')
+        .setDescription('Setup Anti Insulting for your server.')
+    )
+    .addSubcommand(sub =>
+      sub
+        .setName('anti-obscene')
+        .setDescription('Setup Anti Obscening for your server.')
     ),
 
   /**
@@ -211,6 +229,54 @@ module.exports = {
       await GuildIDData.save();
 
       return interaction.reply({ content: 'Successfully Enabled Anti-Toxic!' });
+    } else if (interaction.options.getSubcommand() == 'anti-threat') {
+      const guildId = interaction?.guild.id;
+      const alreadyEnabled = await AntiThreatGuildIDs.findOne({ guildId });
+
+      if (alreadyEnabled) {
+        return interaction.reply({
+          content: 'Anti-Threat is already enabled.',
+        });
+      }
+      const GuildIDData = new AntiThreatGuildIDs({ guildId: guildId });
+
+      await GuildIDData.save();
+
+      return interaction.reply({
+        content: 'Successfully Enabled Anti-Threating!',
+      });
+    } else if (interaction.options.getSubcommand() == 'anti-insult') {
+      const guildId = interaction?.guild.id;
+      const alreadyEnabled = await AntiInsultGuildIDs.findOne({ guildId });
+
+      if (alreadyEnabled) {
+        return interaction.reply({
+          content: 'Anti-Insult is already enabled.',
+        });
+      }
+      const GuildIDData = new AntiInsultGuildIDs({ guildId: guildId });
+
+      await GuildIDData.save();
+
+      return interaction.reply({
+        content: 'Successfully Enabled Anti-Insult!',
+      });
+    } else if (interaction.options.getSubcommand() == 'anti-obscene') {
+      const guildId = interaction?.guild.id;
+      const alreadyEnabled = await AntiObsceneGuildIDs.findOne({ guildId });
+
+      if (alreadyEnabled) {
+        return interaction.reply({
+          content: 'Anti-Obscene is already enabled.',
+        });
+      }
+      const GuildIDData = new AntiObsceneGuildIDs({ guildId: guildId });
+
+      await GuildIDData.save();
+
+      return interaction.reply({
+        content: 'Successfully Enabled Anti-Obscene!',
+      });
     }
   },
 };
