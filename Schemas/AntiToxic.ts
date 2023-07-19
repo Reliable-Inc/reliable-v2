@@ -8,6 +8,6 @@ const guildIdSchema = new Schema({
   },
 });
 
-const GuildIDs = model('', guildIdSchema);
+const GuildIDs = model('antiToxic', guildIdSchema);
 
 export default GuildIDs;
