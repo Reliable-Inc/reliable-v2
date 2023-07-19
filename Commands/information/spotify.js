@@ -1,6 +1,6 @@
 import { CustomRGB } from 'discordjs-colors-bundle';
-import * as MXM from 'node-musixmatch-api';
-const { Musixmatch } = MXM;
+import { Musixmatch } from 'node-musixmatch-api';
+import { albumInfoGet } from './albumTrackAutoComplete';
 const {
   SlashCommandBuilder,
   ButtonBuilder,
@@ -10,31 +10,8 @@ const {
   ChatInputCommandInteraction,
   Client,
 } = require('discord.js');
-const mxm = new Musixmatch(process?.env['Musixmatch'].toString());
-const puppeteer = require('puppeteer');
-
-async function wrapAPI(apiUrl) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-
-  // Navigate to the API URL
-  await page.goto(apiUrl);
-
-  // Extract the API response
-  const apiResponse = await page.evaluate(() => {
-    return fetch(location.href)
-      .then(response => response.json())
-      .catch(error => {
-        console.error('Error fetching API:', error);
-        return null;
-      });
-  });
-
-  await browser.close();
-
-  return apiResponse;
-}
-
+const mxm = new Musixmatch();
+mxm.setApiKey(`${process?.env['Musixmatch'].toString()}`);
 const fs = require('fs');
 const fetch = require('node-fetch');
 
@@ -132,8 +109,9 @@ module.exports = {
    * @returns
    */
   async execute(interaction, client) {
+    await interaction.deferReply({ fetchReply: true, ephemeral: true });
+
     if (interaction.options.getSubcommand() == 'info') {
-      await interaction.deferReply({ ephemeral: true });
       const member = interaction.member;
       const activity = member.presence.activities.find(
         activity => activity.type === 2 && activity.name === 'Spotify'
@@ -180,10 +158,6 @@ module.exports = {
             '55578B011601B1EF8BC274C33F9043CA947F99DCFF6AB1B746DBF1E96A6F2B997493EE03F2045E23060D22ED54D7B8D422981DE4D537EFD5DCF9DA7B0658AA87EB7AE701D7',
         };
 
-        // const lyricsRes = await wrapAPI(
-        //   `https://apic-desktop.musixmatch.com/ws/1.1/macro.subtitles.get?format=json&namespace=lyrics_richsynched&subtitle_format=mxm&app_id=web-desktop-app-v1.0&q_artist=${artistName}&q_track=${trackName}&usertoken=200501593b603a3fdc5c9b4a696389f6589dd988e5a1cf02dfdce1`
-        // );
-
         const info = await getTrackInfo(artistName, trackName);
 
         const albumIcon = info?.albumIcon;
@@ -195,8 +169,9 @@ module.exports = {
           .toString()
           .padStart(2, '0')}`;
 
+        const SpotifyId = info?.trackId;
         const deepSearch = await mxm.trackGet(`track_isrc=${info?.isrc}`);
-
+        const albumId = deepSearch?.message.body.track.album_id;
         const id = deepSearch?.message.body.track.track_id;
         const albumName = info?.album;
         const hasLyrics = deepSearch?.message.body.track.has_lyrics
@@ -210,29 +185,59 @@ module.exports = {
           ? 'Yes'
           : 'No';
         const trackRating = deepSearch?.message.body.track.track_rating;
+        const lyricsRes = await mxm.matcherLyricsGet(
+          `track_isrc=${info?.isrc}`
+        );
+        const lyrics =
+          lyricsRes.message.body.lyrics.lyrics_body.replace(
+            /\*\* This Lyrics is NOT for Commercial use \*\*/g,
+            '30% Lyrics By Musixmatch'
+          ) ?? 'Lyrics is unavailable.';
+        const albumSearch = await albumInfoGet(albumId);
+        const albumTracks = albumSearch.message.body.track_list
+          .map((track, index) => `${index + 1}. ${track.track.track_name}`)
+          .join('\n');
 
         const Embed = new EmbedBuilder()
           .setTitle(`__Your spotify status__`)
           .setDescription(
             `Presenting an extensive and thorough overview of the complete information pertaining to your current Spotify listening session, including track name, artist name, album details, availability of lyrics, instrumental status, and explicit content classification. Please find the comprehensive report below, offering detailed insights into your present Spotify experience.`
           )
-          .setColor(`#2F3136`)
+          .setColor(0x2f3136)
           .setFooter({ text: 'Reliable | Your trusted assistant' })
-          // .setDescription(`## Lyrics:\n${lyrics}`) Hup beta! Eida add disos kan  -_- lyrics 30% dey Musixmatch.
-          .addFields({
-            name: '__Track Information__',
-            value: `**\`‣\` Artist Name**: \`${
-              aName || 'N/A'
-            }\`\n**\`‣\` Album Name**: \`${
-              albumName ?? 'N/A'
-            }\`\n**\`‣\` Explicit**: \`${
-              isExplicit ?? 'Yes'
-            }\`\n**\`‣\` Duration**: \`${
-              formattedDuration ?? '0:00'
-            }\`\n**\`‣\` ISRC**: \`${info?.isrc ?? 'ABCDEFGH123'}\``,
-          })
+          .setDescription(`## Lyrics:\n${lyrics}`)
+          .addFields(
+            {
+              name: '__Track Information__',
+              value: `**\`‣\` Artist Name**: \`${
+                aName ?? 'N/A'
+              }\`\n**\`‣\` Album Name**: \`${
+                albumName ?? 'N/A'
+              }\`\n**\`‣\` Explicit**: \`${
+                isExplicit ?? 'Yes'
+              }\`\n**\`‣\` Duration**: \`${
+                formattedDuration ?? '0:00'
+              }\`\n**\`‣\` ISRC**: \`${
+                info?.isrc ?? 'ABCDEFGH123'
+              }\`\n**\`‣\` ID**: \`${
+                id ?? '12345678'
+              }\`\n**\`‣\` Album Id**: \`${
+                albumId ?? '12345678'
+              }\`\n**\`‣\` Spotify Id**: \`${SpotifyId ?? '12345678'}\``,
+              inline: true,
+            },
+            {
+              name: '**__More tracks on this album__**',
+              value: `${albumTracks}`,
+              inline: true,
+            }
+          )
           .setThumbnail(albumIcon);
 
+        const MXMLink =
+          deepSearch?.message.body.track.track_share_url.split(
+            '?utm_source'
+          )[0] ?? 'https://www.musixmatch.com';
         const bcomponents = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
             .setCustomId('torbap1')
@@ -253,12 +258,15 @@ module.exports = {
             .setCustomId('kuttachuda1')
             .setLabel(`Track Rating Musixmatch: ${trackRating ?? '0'}`)
             .setStyle('Secondary')
-            .setDisabled(true)
+            .setDisabled(true),
+          new ButtonBuilder()
+            .setLabel(`Full Lyrics`)
+            .setStyle('Link')
+            .setURL(MXMLink ?? 'https://www.musixmatch.com')
         );
         return interaction.editReply({
           embeds: [Embed],
           components: [bcomponents],
-          ephemeral: true,
         });
       }
     }
