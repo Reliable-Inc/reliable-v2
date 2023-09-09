@@ -1,9 +1,10 @@
 'use strict';
 
 import chalk from 'chalk';
-import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import Configuration from './config';
+import dotenv from 'dotenv';
+
 dotenv.config();
 
 const { cyan, blue, greenBright, red, white, yellow, bold, whiteBright, gray } =

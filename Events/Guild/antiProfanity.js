@@ -1,12 +1,11 @@
 const { Events, Client, Message } = require('discord.js');
-import sleep from '../../globalFunc';
+import { sleep } from '../../globalFunc';
 import { google } from 'googleapis';
 const API_KEY = process.env['P_API_KEY'.toString()];
 let DISCOVERY_URL =
   'https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1';
 
-import GuildIDs from '../../Schemas/AntiToxic';
-
+import antiProfanityGuildId from '../../Schemas/AntiProfanity';
 module.exports = {
   name: Events.MessageCreate,
   once: false,
@@ -19,7 +18,7 @@ module.exports = {
   async execute(message, client) {
     const guildId = message.guildId;
 
-    const enabled = await GuildIDs.findOne({ guildId });
+    const enabled = await antiProfanityGuildId.findOne({ guildId });
 
     if (!enabled) return;
 
@@ -29,7 +28,7 @@ module.exports = {
           text: message?.content,
         },
         requestedAttributes: {
-          TOXICITY: {},
+          PROFANITY: {},
         },
       };
 
@@ -39,17 +38,20 @@ module.exports = {
           if (err) return;
           const obj = JSON.parse(JSON.stringify(response.data, null, 2));
           const parcentage =
-            obj.attributeScores.TOXICITY.summaryScore.value * 100;
-          if (parcentage >= 70) {
+            obj.attributeScores.PROFANITY.summaryScore.value * 100;
+          if (Math.ceil(parcentage) >= 40) {
             await message.delete();
             const reply = await message.channel.send({
-              content: `<@${message.author.id}> Toxicity isn't allowed in this server.`,
+              content: `<@${message.author.id}> Swearning isn't allowed in this server.`,
             });
 
             await sleep(10000);
             reply.delete();
           }
-          //   console.log('Toxicity Percentage: ');
+          //   console.log(
+          //     'Insulting Percentage: ',
+          //     response.data.attributeScores.INSULT.summaryScore.value * 100
+          //   );
           //   console.log(JSON.stringify(response.data, null, 2));
         }
       );

@@ -1,5 +1,5 @@
 const { Events, Client, Message } = require('discord.js');
-import sleep from '../../globalFunc';
+import { sleep } from '../../globalFunc';
 import { google } from 'googleapis';
 const API_KEY = process.env['P_API_KEY'.toString()];
 let DISCOVERY_URL =

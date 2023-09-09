@@ -18,17 +18,18 @@ import {
   Partials,
   EmbedBuilder,
 } from 'discord.js';
-import dotenv from 'dotenv';
 import chalk from 'chalk';
 import ServerKey from './Schemas/ServerKey';
 import * as cb from 'discordjs-colors-bundle';
 import Report from './Schemas/Reports';
 const Configuration = require('./config');
 import axios from 'axios';
-dotenv.config();
+require('dotenv').config();
 
 const clientId = process.env.ClientId;
+console.log(clientId);
 const clientSecret = process.env.ClientSecret;
+console.log(clientId);
 const redirectUri = Configuration.default.redirectUri;
 
 const app = express();
